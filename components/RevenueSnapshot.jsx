@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const SUPABASE_URL = "https://tsdyedahxmiaaxnewfoz.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzZHllZGFoeG1pYWF4bmV3Zm96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNTUyNjksImV4cCI6MjA4NzYzMTI2OX0.R5S-Bmi8UUPDlz7KUcuA6Cj6LIZMKTqo1O-r_CrfrVA";
 const supabase = typeof window !== "undefined"
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
