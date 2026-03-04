@@ -165,10 +165,10 @@ function MetricCard({ label, value, sub, gold=false, large=false, hero=false }) 
   );
 }
 
-function Divider() { return <div style={{ height: 1, background: C.gold, margin: "56px 0", width: 60, opacity: 0.5 }} />; }
+function Divider() { return <div style={{ height: 1, background: C.gold, margin: "36px 0", width: 60, opacity: 0.5 }} />; }
 function SectionLabel({ text }) { return <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 12 }}>{text}</div>; }
 function SectionHeading({ text, sub }) {
-  return <div style={{ marginBottom: 40 }}>
+  return <div style={{ marginBottom: 28 }}>
     {text && <h2 style={{ fontSize: 32, fontWeight: 300, color: C.ink, fontFamily: font.display, margin: 0, lineHeight: 1.15 }}>{text}</h2>}
     {sub && <p style={{ fontSize: 13, color: C.ash, fontFamily: font.body, margin: "14px 0 0", lineHeight: 1.7, fontWeight: 300 }}>{sub}</p>}
   </div>;
@@ -195,7 +195,7 @@ function InputField({ label, hint, value, onChange, prefix, suffix, type="number
   const display = isMoney && value && !focused ? Number(value).toLocaleString("en-US") : value;
   const iType = isMoney && !focused ? "text" : type;
   return (
-    <div style={{ marginBottom: 22 }}>
+    <div style={{ marginBottom: 18 }}>
       <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: C.ink, marginBottom: 4, fontFamily: font.body }}>{label}</label>
       {hint && <div style={{ fontSize: 11, color: C.ash, marginBottom: 8, fontFamily: font.body, lineHeight: 1.5 }}>{hint}</div>}
       <div style={{ display: "flex", alignItems: "center", background: C.cardBg, border: `1px solid ${focused ? C.gold : C.line}`, borderRadius: 2, overflow: "hidden", transition: "border-color 0.2s" }}>
@@ -570,28 +570,45 @@ Generate the 45-day execution plan. Prioritize the #1 ranked gap. Be specific to
   );
 }
 
+// ─── Line-Art SVG Icons ───
+const Ico = ({ children, size=16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#C9A96E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>{children}</svg>
+);
+const IcoChart = ({s=16}) => <Ico size={s}><polyline points="4 18 9 11 14 15 20 6" /><line x1="20" y1="6" x2="20" y2="10" /><line x1="20" y1="6" x2="16" y2="6" /></Ico>;
+const IcoDrop = ({s=16}) => <Ico size={s}><path d="M12 2C12 2 5 10 5 14.5C5 18.09 8.13 21 12 21C15.87 21 19 18.09 19 14.5C19 10 12 2 12 2Z" /></Ico>;
+const IcoTarget = ({s=16}) => <Ico size={s}><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1" /></Ico>;
+const IcoPencil = ({s=16}) => <Ico size={s}><path d="M17 3L21 7L7 21H3V17L17 3Z" /></Ico>;
+const IcoClock = ({s=16}) => <Ico size={s}><circle cx="12" cy="12" r="9" /><polyline points="12 7 12 12 15 15" /><line x1="4" y1="4" x2="20" y2="20" /></Ico>;
+const IcoCalendar = ({s=16}) => <Ico size={s}><rect x="3" y="4" width="18" height="17" rx="2" /><line x1="3" y1="10" x2="21" y2="10" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="16" y1="2" x2="16" y2="6" /></Ico>;
+const IcoLoop = ({s=16}) => <Ico size={s}><path d="M17 2L21 6L17 10" /><path d="M3 12C3 7 6.5 4 10 4H21" /><path d="M7 22L3 18L7 14" /><path d="M21 12C21 17 17.5 20 14 20H3" /></Ico>;
+const IcoLift = ({s=16}) => <Ico size={s}><polyline points="4 16 8 12 12 14 20 6" /><line x1="14" y1="6" x2="20" y2="6" /><line x1="20" y1="6" x2="20" y2="12" /></Ico>;
+const IcoChat = ({s=16}) => <Ico size={s}><path d="M21 12C21 16.97 16.97 21 12 21C10.5 21 9.07 20.65 7.8 20L3 21L4 16.2C3.35 14.93 3 13.5 3 12C3 7.03 7.03 3 12 3C16.97 3 21 7.03 21 12Z" /></Ico>;
+const IcoCheck = ({s=16}) => <Ico size={s}><rect x="3" y="3" width="18" height="18" rx="2" /><polyline points="9 12 11 14 15 10" /></Ico>;
+const IcoSpark = ({s=16}) => <Ico size={s}><path d="M12 2L14 9L21 9L15.5 13.5L17.5 21L12 16.5L6.5 21L8.5 13.5L3 9L10 9L12 2Z" /></Ico>;
+const IcoExport = ({s=16}) => <Ico size={s}><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" /><polyline points="14 2 14 8 20 8" /></Ico>;
+
 // ═══════════════════════════════════════════
-// NAV STRUCTURE — tiered: free horizontal tabs → paid grouped sidebar
+// NAV STRUCTURE
 // ═══════════════════════════════════════════
 const FREE_TABS = [
-  { id: "numbers", icon: "—", label: "The Numbers" },
-  { id: "leak", icon: "—", label: "The Leak" },
-  { id: "fix", icon: "—", label: "The Fix" },
+  { id: "numbers", icon: <IcoChart s={15} />, label: "The Numbers" },
+  { id: "leak", icon: <IcoDrop s={15} />, label: "The Leak" },
+  { id: "fix", icon: <IcoTarget s={15} />, label: "The Fix" },
 ];
 const PAID_NAV = [
   { section: "OVERVIEW", items: [
-    { id: "numbers", label: "Snapshot", icon: "·" },
-    { id: "leak", label: "Losses", icon: "·" },
-    { id: "fix", label: "Top Fix", icon: "·" },
+    { id: "numbers", label: "Snapshot", icon: <IcoChart s={14} /> },
+    { id: "leak", label: "Losses", icon: <IcoDrop s={14} /> },
+    { id: "fix", label: "Top Fix", icon: <IcoTarget s={14} /> },
   ]},
   { section: "YOUR PLAN", items: [
-    { id: "lift45", label: "45-Day Action", icon: "·" },
-    { id: "scripts", label: "Client Scripts", icon: "💬" },
-    { id: "scorecard", label: "Weekly Scorecard", icon: "✅" },
+    { id: "lift45", label: "45-Day Action", icon: <IcoLift s={14} /> },
+    { id: "scripts", label: "Client Scripts", icon: <IcoChat s={14} /> },
+    { id: "scorecard", label: "Weekly Scorecard", icon: <IcoCheck s={14} /> },
   ]},
   { section: "TOOLS", items: [
-    { id: "ai", label: "AI Engine", icon: "🤖", lock: "ai" },
-    { id: "copy", label: "Export", icon: "📄" },
+    { id: "ai", label: "AI Engine", icon: <IcoSpark s={14} />, lock: "ai" },
+    { id: "copy", label: "Export", icon: <IcoExport s={14} /> },
   ]},
 ];
 
@@ -729,7 +746,7 @@ export default function RevenueSnapshot() {
   const rmSvc = (i) => setData(d => ({...d, services: d.services.filter((_,x) => x !== i)}));
 
   function NavButtons({ onBack, onNext, canNext, nextLabel="Continue →" }) {
-    return <div style={{ display: "flex", gap: 12, marginTop: 36 }}>
+    return <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
       {onBack && <SecondaryButton onClick={onBack}>← Back</SecondaryButton>}
       <PrimaryButton onClick={onNext} disabled={!canNext} style={{ flex: 1 }}>{nextLabel}</PrimaryButton>
     </div>;
@@ -741,13 +758,13 @@ export default function RevenueSnapshot() {
   const renderStep = () => {
     switch(step) {
       case 0: return (
-        <div style={{ textAlign: "center", padding: "80px 20px 60px", maxWidth: 480, margin: "0 auto" }}>
-          <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 40 }}>Flowe Collective</div>
+        <div style={{ textAlign: "center", padding: "64px 20px 48px", maxWidth: 480, margin: "0 auto" }}>
+          <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 32 }}>Flowe Collective</div>
           <h1 style={{ fontSize: 52, fontWeight: 300, color: C.ink, fontFamily: font.display, lineHeight: 1.08, margin: "0 0 8px" }}>The Revenue</h1>
-          <h1 style={{ fontSize: 52, fontWeight: 400, fontStyle: "italic", color: C.goldDark, fontFamily: font.display, lineHeight: 1.08, margin: "0 0 28px" }}>Snapshot</h1>
-          <div style={{ width: 50, height: 1, background: C.gold, margin: "0 auto 32px" }} />
-          <p style={{ fontSize: 16, color: C.goldDark, fontFamily: font.display, margin: "0 0 24px", fontStyle: "italic", lineHeight: 1.6 }}>Precision creates power.</p>
-          <p style={{ fontSize: 14, color: C.ash, fontFamily: font.body, margin: "0 auto 48px", maxWidth: 400, lineHeight: 1.8, fontWeight: 300 }}>Designed for appointment-based service professionals. Understand exactly how your business generates revenue and where the structural gaps are.</p>
+          <h1 style={{ fontSize: 52, fontWeight: 400, fontStyle: "italic", color: C.goldDark, fontFamily: font.display, lineHeight: 1.08, margin: "0 0 24px" }}>Snapshot</h1>
+          <div style={{ width: 50, height: 1, background: C.gold, margin: "0 auto 24px" }} />
+          <p style={{ fontSize: 16, color: C.goldDark, fontFamily: font.display, margin: "0 0 20px", fontStyle: "italic", lineHeight: 1.6 }}>Precision creates power.</p>
+          <p style={{ fontSize: 14, color: C.ash, fontFamily: font.body, margin: "0 auto 40px", maxWidth: 400, lineHeight: 1.8, fontWeight: 300 }}>Designed for appointment-based service professionals. Understand exactly how your business generates revenue and where the structural gaps are.</p>
           <PrimaryButton onClick={() => goTo(1)}>Begin Assessment</PrimaryButton>
           <p style={{ fontSize: 11, color: C.ash, fontFamily: font.body, marginTop: 28, fontWeight: 300, letterSpacing: 0.5 }}>~3 minutes · Averages and estimates are perfectly fine</p>
         </div>
@@ -930,17 +947,20 @@ export default function RevenueSnapshot() {
         <div>
           {/* ── Edit Numbers Link ── */}
           <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
-            <button onClick={() => goTo(2)} style={{ background: "transparent", border: "none", cursor: "pointer", fontSize: 12, color: C.ash, fontFamily: font.body, padding: "4px 8px", textDecoration: "underline" }}>Edit Numbers</button>
+            <button onClick={() => goTo(2)} style={{ background: "transparent", border: "none", cursor: "pointer", fontSize: 12, color: C.ash, fontFamily: font.body, padding: "4px 8px", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}><IcoPencil s={12} /> Edit Numbers</button>
           </div>
           {/* ── Horizontal Tab Bar ── */}
-          <div style={{ display: "flex", borderBottom: `1px solid ${C.line}`, marginBottom: 28 }}>
+          <div style={{ display: "flex", borderBottom: `1px solid ${C.line}`, marginBottom: 22 }}>
             {FREE_TABS.map(tab => (
               <button key={tab.id} onClick={() => setActiveNav(tab.id)} style={{
                 flex: 1, background: "transparent", border: "none",
                 borderBottom: activeNav === tab.id ? `2px solid ${C.gold}` : "2px solid transparent",
                 padding: "14px 8px 12px", cursor: "pointer", transition: "all 0.2s",
               }}>
-                <div style={{ fontSize: 11, fontWeight: activeNav === tab.id ? 500 : 300, letterSpacing: 1.5, textTransform: "uppercase", color: activeNav === tab.id ? C.ink : C.ash, fontFamily: font.body }}>{tab.label}</div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                  {tab.icon}
+                  <div style={{ fontSize: 11, fontWeight: activeNav === tab.id ? 500 : 300, letterSpacing: 1.5, textTransform: "uppercase", color: activeNav === tab.id ? C.ink : C.ash, fontFamily: font.body }}>{tab.label}</div>
+                </div>
               </button>
             ))}
           </div>
@@ -982,7 +1002,7 @@ export default function RevenueSnapshot() {
                   <MetricCard label="Current Trajectory" value={fmt(r.annualRev)} sub={r.revenueGap > 0 ? `${fmt(r.revenueGapAnnual)} below target` : "On pace"} gold={r.revenueGap > 0} />
                 </div>
               </>}
-              <div style={{ marginTop: 28 }}>
+              <div style={{ marginTop: 20 }}>
                 <PrimaryButton onClick={() => setActiveNav("leak")} style={{ width: "100%" }}>Continue to "The Leak" →</PrimaryButton>
               </div>
             </div>
@@ -1004,7 +1024,7 @@ export default function RevenueSnapshot() {
               {r.lostRevAnnual > 0 && (
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                    <span style={{ fontSize: 14, color: "#C9A96E", fontFamily: "Cormorant Garamond, serif" }}>//</span>
+                    <IcoClock s={16} />
                     <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.critical, fontFamily: font.body }}>No-Shows & Cancellations</span>
                   </div>
                   <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.lostRevAnnual)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> /year</span></div>
@@ -1019,7 +1039,7 @@ export default function RevenueSnapshot() {
               {r.unusedHours > 0 && (
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                    <span style={{ fontSize: 14, color: "#C9A96E", fontFamily: "Cormorant Garamond, serif" }}>//</span>
+                    <IcoCalendar s={16} />
                     <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body }}>Unfilled Hours</span>
                   </div>
                   <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.unusedHours * r.revenuePerHourWorked * 12)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> /year potential</span></div>
@@ -1034,7 +1054,7 @@ export default function RevenueSnapshot() {
               {r.rebook > 0 && r.rebook < 1 && (
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                    <span style={{ fontSize: 14, color: "#C9A96E", fontFamily: "Cormorant Garamond, serif" }}>//</span>
+                    <IcoLoop s={16} />
                     <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body }}>{r.terms.client.charAt(0).toUpperCase() + r.terms.client.slice(1)}s Not Rebooking</span>
                   </div>
                   <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>Only {fmtPct(r.rebook*100)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> book their next {r.terms.appointment}</span></div>
@@ -1044,7 +1064,7 @@ export default function RevenueSnapshot() {
                 </Card>
               )}
 
-              <div style={{ marginTop: 28 }}>
+              <div style={{ marginTop: 20 }}>
                 <PrimaryButton onClick={() => setActiveNav("fix")} style={{ width: "100%" }}>See Your #1 Fix →</PrimaryButton>
               </div>
             </div>
@@ -1334,14 +1354,14 @@ Directional diagnostic. Not financial or tax advice.`}
         {step === 6 && hasBP && <div className="rv-mnav" style={{ display: "none", overflowX: "auto", gap: 4, marginBottom: 20, paddingBottom: 8, borderBottom: `1px solid ${C.line}` }}>
           {PAID_NAV.flatMap(g => g.items).map(n => {
             const locked = n.lock === "ai" && !hasAi;
-            return <button key={n.id} onClick={() => { if (locked) setShowPricing(true); else setActiveNav(n.id); }} style={{ background: activeNav === n.id ? C.gold : "transparent", color: activeNav === n.id ? C.ink : locked ? C.line : C.ash, border: "none", borderRadius: 2, padding: "8px 14px", fontSize: 11, fontWeight: 500, fontFamily: font.body, cursor: "pointer", whiteSpace: "nowrap" }}>{n.icon} {n.label}{locked ? " 🔒" : ""}</button>;
+            return <button key={n.id} onClick={() => { if (locked) setShowPricing(true); else setActiveNav(n.id); }} style={{ background: activeNav === n.id ? C.gold : "transparent", color: activeNav === n.id ? C.ink : locked ? C.line : C.ash, border: "none", borderRadius: 2, padding: "8px 14px", fontSize: 11, fontWeight: 500, fontFamily: font.body, cursor: "pointer", whiteSpace: "nowrap" }}>{n.icon} {n.label}{locked ? " ●" : ""}</button>;
           })}
         </div>}
 
         <div ref={contentRef} style={{ opacity: animate ? 1 : 0, transform: animate ? "translateY(0)" : "translateY(8px)", transition: "opacity 0.3s, transform 0.3s" }}>
           {step === 6 ? (
             <div>
-              <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <div style={{ textAlign: "center", marginBottom: 36 }}>
                 <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 14 }}>Flowe Collective</div>
                 <h1 style={{ fontSize: 38, fontWeight: 300, color: C.ink, fontFamily: font.display, margin: "0 0 6px", lineHeight: 1.1 }}>The Revenue Snapshot</h1>
                 <div style={{ fontSize: 15, color: C.ash, fontFamily: font.display, fontStyle: "italic" }}>{data.businessName || "Your Business"}{loginData.name ? ` · ${loginData.name}` : ""}</div>
@@ -1359,7 +1379,7 @@ Directional diagnostic. Not financial or tax advice.`}
                         {group.items.map(n => {
                           const active = activeNav === n.id;
                           const locked = n.lock === "ai" && !hasAi;
-                          return <div key={n.id} onClick={() => { if (locked) setShowPricing(true); else setActiveNav(n.id); }} style={{ padding: "8px 12px", fontSize: 12, fontWeight: active ? 600 : 400, color: locked ? C.line : active ? C.ink : C.ash, fontFamily: font.body, cursor: "pointer", borderLeft: active ? `2px solid ${C.gold}` : "2px solid transparent", marginLeft: -1, transition: "all 0.2s", letterSpacing: 0.3, display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontSize: 12 }}>{n.icon}</span>{n.label}{locked && <span style={{ fontSize: 9, marginLeft: "auto" }}>🔒</span>}</div>;
+                          return <div key={n.id} onClick={() => { if (locked) setShowPricing(true); else setActiveNav(n.id); }} style={{ padding: "8px 12px", fontSize: 12, fontWeight: active ? 600 : 400, color: locked ? C.line : active ? C.ink : C.ash, fontFamily: font.body, cursor: "pointer", borderLeft: active ? `2px solid ${C.gold}` : "2px solid transparent", marginLeft: -1, transition: "all 0.2s", letterSpacing: 0.3, display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontSize: 12 }}>{n.icon}</span>{n.label}{locked && <span style={{ fontSize: 8, marginLeft: "auto", color: C.line }}>●</span>}</div>;
                         })}
                       </div>
                     ))}
