@@ -173,8 +173,8 @@ function SectionHeading({ text, sub }) {
     {sub && <p style={{ fontSize: 13, color: C.ash, fontFamily: font.body, margin: "14px 0 0", lineHeight: 1.7, fontWeight: 300 }}>{sub}</p>}
   </div>;
 }
-function HintBox({ children, style={} }) { return <div style={{ background: "#F0EBE2", border: `1px solid ${C.line}`, borderRadius: 2, padding: "14px 16px", marginBottom: 20, ...style }}><div style={{ fontSize: 12, color: C.taupe, fontFamily: font.body, lineHeight: 1.6 }}>{children}</div></div>; }
-function NoteBox({ icon="", children }) { return <div style={{ background: "#F0EBE2", border: `1px solid ${C.line}`, borderRadius: 2, padding: "16px 18px", display: "flex", gap: 12, alignItems: "flex-start", margin: "16px 0" }}><div style={{ fontSize: 12, color: C.ink, fontFamily: font.body, lineHeight: 1.6 }}>{children}</div></div>; }
+function HintBox({ children, style={} }) { return <div style={{ background: "transparent", border: `1px solid ${C.line}`, borderRadius: 2, padding: "12px 16px", marginBottom: 20, ...style }}><div style={{ fontSize: 12, color: C.ash, fontFamily: font.body, lineHeight: 1.6, fontWeight: 300 }}>{children}</div></div>; }
+function NoteBox({ icon="", children }) { return <div style={{ background: "#F0EBE2", border: `1px solid ${C.line}`, borderRadius: 2, padding: "14px 18px", display: "flex", gap: 12, alignItems: "flex-start", margin: "16px 0" }}><div style={{ fontSize: 12, color: C.ash, fontFamily: font.body, lineHeight: 1.6, fontWeight: 300 }}>{children}</div></div>; }
 
 function PrimaryButton({ children, onClick, disabled=false, style={}, ariaLabel }) {
   return <button onClick={onClick} disabled={disabled} aria-label={ariaLabel}
@@ -197,13 +197,13 @@ function InputField({ label, hint, value, onChange, prefix, suffix, type="number
   return (
     <div style={{ marginBottom: 22 }}>
       <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: C.ink, marginBottom: 4, fontFamily: font.body }}>{label}</label>
-      {hint && <div style={{ fontSize: 11, color: C.taupe, marginBottom: 8, fontFamily: font.body, lineHeight: 1.5 }}>{hint}</div>}
+      {hint && <div style={{ fontSize: 11, color: C.ash, marginBottom: 8, fontFamily: font.body, lineHeight: 1.5 }}>{hint}</div>}
       <div style={{ display: "flex", alignItems: "center", background: C.cardBg, border: `1px solid ${focused ? C.gold : C.line}`, borderRadius: 2, overflow: "hidden", transition: "border-color 0.2s" }}>
         {prefix && <span style={{ padding: "0 0 0 14px", color: C.ash, fontSize: 14, fontFamily: font.body }}>{prefix}</span>}
         <input type={iType} value={display} onChange={(e) => { onChange(e.target.value.replace(/,/g, "")); }}
           onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
           placeholder={placeholder||"0"} aria-label={ariaLabel||label}
-          style={{ flex: 1, background: "transparent", border: "none", outline: "none", padding: "13px 14px", color: C.ink, fontSize: 14, fontFamily: font.body, fontWeight: 500, minWidth: 0 }} />
+          style={{ flex: 1, background: "transparent", border: "none", outline: "none", padding: "13px 14px", color: C.ink, fontSize: 14, fontFamily: font.body, fontWeight: 400, minWidth: 0 }} />
         {suffix && <span style={{ padding: "0 14px 0 0", color: C.ash, fontSize: 12, fontFamily: font.body, whiteSpace: "nowrap" }}>{suffix}</span>}
       </div>
     </div>
@@ -243,7 +243,7 @@ function LockedSection({ title, lockType="blueprint", onUnlock, email="" }) {
       <div style={{ filter: "blur(6px)", opacity: 0.4, pointerEvents: "none", userSelect: "none" }}>
         <Card style={{ padding: 40, textAlign: "center" }}>
           <div style={{ fontSize: 20, color: C.ink, fontFamily: font.display, fontWeight: 500 }}>{title}</div>
-          <div style={{ fontSize: 13, color: C.taupe, fontFamily: font.body, marginTop: 8 }}>Detailed analysis with severity levels, dollar impact estimates, and strategic recommendations.</div>
+          <div style={{ fontSize: 13, color: C.ash, fontFamily: font.body, marginTop: 8 }}>Detailed analysis with severity levels, dollar impact estimates, and strategic recommendations.</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 20 }}>
             <Card style={{ padding: 16 }}><div style={{ height: 12, background: C.line, borderRadius: 4, marginBottom: 8 }}/><div style={{ height: 8, background: C.line, borderRadius: 4, width: "60%" }}/></Card>
             <Card style={{ padding: 16 }}><div style={{ height: 12, background: C.line, borderRadius: 4, marginBottom: 8 }}/><div style={{ height: 8, background: C.line, borderRadius: 4, width: "75%" }}/></Card>
@@ -254,7 +254,7 @@ function LockedSection({ title, lockType="blueprint", onUnlock, email="" }) {
         <div style={{ background: C.cardBg, borderRadius: 2, padding: "28px 32px", textAlign: "center", boxShadow: "0 8px 32px rgba(26,26,26,0.12)", maxWidth: 360 }}>
           <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 10 }}>{m.badge}</div>
           <div style={{ fontSize: 18, fontWeight: 500, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{title}</div>
-          <p style={{ fontSize: 12, color: C.taupe, fontFamily: font.body, lineHeight: 1.6, margin: "0 0 18px" }}>{m.desc}</p>
+          <p style={{ fontSize: 12, color: C.ash, fontFamily: font.body, lineHeight: 1.6, margin: "0 0 18px" }}>{m.desc}</p>
           {m.stripe ? (
             <a href={`${m.stripe}?prefilled_email=${encodeURIComponent(email)}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
               <PrimaryButton style={{ width: "100%" }}>{m.cta}</PrimaryButton>
@@ -271,13 +271,13 @@ function LockedSection({ title, lockType="blueprint", onUnlock, email="" }) {
 // ─── Service Input ───
 function ServiceInput({ service, index, onChange, onRemove, canRemove }) {
   const [f, setF] = useState(null);
-  const is = () => ({ flex: 1, background: "transparent", border: "none", outline: "none", padding: "11px 12px", color: C.ink, fontSize: 13, fontFamily: font.body, fontWeight: 500, minWidth: 0 });
-  const ws = (n) => ({ display: "flex", alignItems: "center", background: C.cardBg, border: `1px solid ${f === n ? C.ash : C.line}`, borderRadius: 4, overflow: "hidden", transition: "border-color 0.2s" });
+  const is = () => ({ flex: 1, background: "transparent", border: "none", outline: "none", padding: "11px 12px", color: C.ink, fontSize: 13, fontFamily: font.body, fontWeight: 400, minWidth: 0 });
+  const ws = (n) => ({ display: "flex", alignItems: "center", background: C.cardBg, border: `1px solid ${f === n ? C.gold : C.line}`, borderRadius: 2, overflow: "hidden", transition: "border-color 0.2s" });
   const dH = Math.floor((parseFloat(service.duration)||0)/60), dM = (parseFloat(service.duration)||0)%60;
   return (
     <Card style={{ padding: "18px", marginBottom: 12 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: C.taupe, fontFamily: font.body, textTransform: "uppercase" }}>Service {index+1}</span>
+        <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: C.gold, fontFamily: font.body, textTransform: "uppercase" }}>Service {index+1}</span>
         {canRemove && <button onClick={onRemove} aria-label={`Remove service ${index+1}`} style={{ background: "none", border: "none", color: C.ash, cursor: "pointer", fontSize: 16, lineHeight: 1, padding: "2px 6px" }}>×</button>}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -308,7 +308,7 @@ function PricingModal({ onClose, email, auditId }) {
         <div style={{ textAlign: "center", marginBottom: 18 }}>
           <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 10 }}>Unlock Your Lift Plan</div>
           <h2 style={{ fontSize: 32, fontWeight: 300, color: C.ink, fontFamily: font.display, margin: 0, lineHeight: 1.1 }}>Choose your speed.</h2>
-          <p style={{ fontSize: 13, color: C.taupe, fontFamily: font.body, margin: "8px auto 0", maxWidth: 560, lineHeight: 1.6 }}>Free shows the numbers. <strong>$147 unlocks the plan + scripts + scorecard for this audit.</strong> Add AI to generate your step-by-step execution plan in seconds.</p>
+          <p style={{ fontSize: 13, color: C.ash, fontFamily: font.body, margin: "8px auto 0", maxWidth: 560, lineHeight: 1.6 }}>Free shows the numbers. <strong>$147 unlocks the plan + scripts + scorecard for this audit.</strong> Add AI to generate your step-by-step execution plan in seconds.</p>
           <p style={{ fontSize: 11, color: C.ash, fontFamily: font.body, margin: "10px auto 0" }}>Lift Plan + AI apply to this audit only. Unlimited Mode unlocks everything.</p>
         </div>
 
@@ -316,18 +316,18 @@ function PricingModal({ onClose, email, auditId }) {
           {/* Lift Plan */}
           <Card gold style={{ padding: 18, border: `1px solid ${C.taupe}35` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body }}>{OFFERS.blueprint.badge}</div>
+              <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.ash, fontFamily: font.body }}>{OFFERS.blueprint.badge}</div>
               <div style={{ fontSize: 12, color: C.ash, fontFamily: font.body }}>{OFFERS.blueprint.priceLabel}</div>
             </div>
             <div style={{ fontSize: 20, fontFamily: font.display, color: C.ink, marginTop: 10 }}>{OFFERS.blueprint.name}</div>
             <div style={{ fontSize: 12, color: C.ink, fontFamily: font.body, marginTop: 8, lineHeight: 1.6 }}>
               <strong>{OFFERS.blueprint.hype}</strong>
-              <div style={{ marginTop: 6, color: C.taupe }}>Unlocks: Gaps + 45-Day Lift + Scripts + Scorecard + Export.</div>
+              <div style={{ marginTop: 6, color: C.ash }}>Unlocks: Gaps + 45-Day Lift + Scripts + Scorecard + Export.</div>
             </div>
             <div style={{ marginTop: 12 }}>
               {OFFERS.blueprint.includes.map((f, i) => (
                 <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "4px 0" }}>
-                  <span style={{ color: C.taupe, fontSize: 12, marginTop: 2 }}>✓</span>
+                  <span style={{ color: C.gold, fontSize: 12, marginTop: 2 }}>✓</span>
                   <span style={{ fontSize: 12, color: C.ink, fontFamily: font.body, lineHeight: 1.5 }}>{f}</span>
                 </div>
               ))}
@@ -345,18 +345,18 @@ function PricingModal({ onClose, email, auditId }) {
           {/* AI Add-On */}
           <Card style={{ padding: 18, border: `1px solid ${C.line}` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: C.ash, fontFamily: font.body }}>{OFFERS.aiAddOn.badge}</div>
+              <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.ash, fontFamily: font.body }}>{OFFERS.aiAddOn.badge}</div>
               <div style={{ fontSize: 12, color: C.ash, fontFamily: font.body }}>{OFFERS.aiAddOn.priceLabel}</div>
             </div>
             <div style={{ fontSize: 20, fontFamily: font.display, color: C.ink, marginTop: 10 }}>{OFFERS.aiAddOn.name}</div>
             <div style={{ fontSize: 12, color: C.ink, fontFamily: font.body, marginTop: 8, lineHeight: 1.6 }}>
               <strong>{OFFERS.aiAddOn.hype}</strong>
-              <div style={{ marginTop: 6, color: C.taupe }}>Best paired with Lift Plan for "do this next" outputs.</div>
+              <div style={{ marginTop: 6, color: C.ash }}>Best paired with Lift Plan for "do this next" outputs.</div>
             </div>
             <div style={{ marginTop: 12 }}>
               {OFFERS.aiAddOn.includes.map((f, i) => (
                 <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "4px 0" }}>
-                  <span style={{ color: C.taupe, fontSize: 12, marginTop: 2 }}>✓</span>
+                  <span style={{ color: C.gold, fontSize: 12, marginTop: 2 }}>✓</span>
                   <span style={{ fontSize: 12, color: C.ink, fontFamily: font.body, lineHeight: 1.5 }}>{f}</span>
                 </div>
               ))}
@@ -377,9 +377,9 @@ function PricingModal({ onClose, email, auditId }) {
           <Card style={{ padding: 18, border: `1px solid ${C.taupe}25` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
               <div style={{ minWidth: 260 }}>
-                <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body }}>{OFFERS.platform.badge}</div>
+                <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.ash, fontFamily: font.body }}>{OFFERS.platform.badge}</div>
                 <div style={{ fontSize: 18, fontFamily: font.display, color: C.ink, marginTop: 6 }}>{OFFERS.platform.name}</div>
-                <div style={{ fontSize: 12, color: C.taupe, fontFamily: font.body, marginTop: 6, lineHeight: 1.6 }}>{OFFERS.platform.hype}</div>
+                <div style={{ fontSize: 12, color: C.ash, fontFamily: font.body, marginTop: 6, lineHeight: 1.6 }}>{OFFERS.platform.hype}</div>
               </div>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <a href={stripeUrl(OFFERS.platform.monthly.stripeKey)} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
@@ -393,7 +393,7 @@ function PricingModal({ onClose, email, auditId }) {
             <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               {OFFERS.platform.includes.map((f, i) => (
                 <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                  <span style={{ color: C.taupe, fontSize: 12, marginTop: 2 }}>✓</span>
+                  <span style={{ color: C.gold, fontSize: 12, marginTop: 2 }}>✓</span>
                   <span style={{ fontSize: 12, color: C.ink, fontFamily: font.body, lineHeight: 1.5 }}>{f}</span>
                 </div>
               ))}
@@ -531,7 +531,7 @@ Generate the 45-day execution plan. Prioritize the #1 ranked gap. Be specific to
 
       {maxGens <= 0 ? (
         <Card style={{ padding: 18, marginBottom: 16, border: `1px solid ${C.line}` }}>
-          <div style={{ fontSize: 12, color: C.taupe, fontFamily: font.body, lineHeight: 1.6 }}>AI is locked for this audit. Add AI (+$27) or unlock Platform for unlimited use.</div>
+          <div style={{ fontSize: 12, color: C.ash, fontFamily: font.body, lineHeight: 1.6 }}>AI is locked for this audit. Add AI (+$27) or unlock Platform for unlimited use.</div>
           <PrimaryButton onClick={onShowPricing} style={{ marginTop: 12, width: "100%" }}>Unlock AI →</PrimaryButton>
         </Card>
       ) : (
@@ -539,7 +539,7 @@ Generate the 45-day execution plan. Prioritize the #1 ranked gap. Be specific to
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
             <div style={{ fontSize: 12, color: C.ink, fontFamily: font.body }}><strong>{remaining}</strong> of {maxGens} runs remaining</div>
             <div style={{ height: 4, flex: 1, background: C.line, borderRadius: 2, margin: "0 16px", overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${Math.max(0, Math.min(100, (remaining / maxGens) * 100))}%`, background: remaining > 0 ? C.taupe : C.critical, borderRadius: 2, transition: "width 0.4s" }} />
+              <div style={{ height: "100%", width: `${Math.max(0, Math.min(100, (remaining / maxGens) * 100))}%`, background: remaining > 0 ? C.gold : C.critical, borderRadius: 2, transition: "width 0.4s" }} />
             </div>
           </div>
 
@@ -549,7 +549,7 @@ Generate the 45-day execution plan. Prioritize the #1 ranked gap. Be specific to
             </PrimaryButton>
           ) : (
             <Card style={{ padding: 20, textAlign: "center", marginBottom: 20, border: `1px solid ${C.line}` }}>
-              <div style={{ fontSize: 13, color: C.taupe, fontFamily: font.body }}>All AI runs used for this audit.{!isPlatform() && " Upgrade to Platform for unlimited."}</div>
+              <div style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}>All AI runs used for this audit.{!isPlatform() && " Upgrade to Platform for unlimited."}</div>
             </Card>
           )}
         </>
@@ -560,7 +560,7 @@ Generate the 45-day execution plan. Prioritize the #1 ranked gap. Be specific to
       {generations.map((gen, i) => (
         <Card key={i} style={{ marginBottom: 14, padding: "20px 22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: C.taupe, fontFamily: font.body, textTransform: "uppercase" }}>Generation {i+1} — {gen.gap || "Primary Gap"}</span>
+            <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: C.gold, fontFamily: font.body, textTransform: "uppercase" }}>Generation {i+1} — {gen.gap || "Primary Gap"}</span>
             <span style={{ fontSize: 10, color: C.ash, fontFamily: font.body }}>{new Date(gen.createdAt).toLocaleDateString()}</span>
           </div>
           <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{gen.text}</div>
@@ -803,7 +803,7 @@ export default function RevenueSnapshot() {
               {authLoading ? "Verifying..." : "Verify & Continue →"}
             </PrimaryButton>
             <div style={{ marginTop: 12, textAlign: "center" }}>
-              <button onClick={() => { setLoginStep("form"); setVerifyCode(""); setAuthError(""); }} style={{ background: "none", border: "none", color: C.taupe, fontSize: 12, fontFamily: font.body, cursor: "pointer", textDecoration: "underline" }}>Use a different email</button>
+              <button onClick={() => { setLoginStep("form"); setVerifyCode(""); setAuthError(""); }} style={{ background: "none", border: "none", color: C.ash, fontSize: 12, fontFamily: font.body, cursor: "pointer", textDecoration: "underline" }}>Use a different email</button>
             </div>
           </>}
         </div>
@@ -816,7 +816,7 @@ export default function RevenueSnapshot() {
           <InputField label="Business Name" value={data.businessName} onChange={v => update("businessName", v)} type="text" placeholder="e.g. The Method Studio" />
           <div style={{ marginBottom: 22 }}>
             <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: C.ink, marginBottom: 4, fontFamily: font.body }}>Industry</label>
-            <div style={{ fontSize: 11, color: C.taupe, marginBottom: 8, fontFamily: font.body, lineHeight: 1.5 }}>This personalizes your scripts and pre-fills example services.</div>
+            <div style={{ fontSize: 11, color: C.ash, marginBottom: 8, fontFamily: font.body, lineHeight: 1.5 }}>This personalizes your scripts and pre-fills example services.</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {Object.entries(INDUSTRIES).map(([id, ind]) => (
                 <button key={id} onClick={() => update("industry", id)} style={{
@@ -861,7 +861,7 @@ export default function RevenueSnapshot() {
           <button onClick={addSvc} style={{ width: "100%", background: "transparent", border: `1px dashed ${C.gold}40`, borderRadius: 2, padding: 14, color: C.gold, fontSize: 12, cursor: "pointer", fontFamily: font.body, fontWeight: 500, letterSpacing: 1.5 }}>+ Add Service</button>
           {r.totalServiceHrs > 0 && <Card style={{ marginTop: 20, padding: "18px 20px", border: `1px solid ${r.utilization > 100 ? "#D4785055" : C.line}` }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: C.taupe, fontFamily: font.body, textTransform: "uppercase" }}>Service Hours Summary</span>
+              <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: C.gold, fontFamily: font.body, textTransform: "uppercase" }}>Service Hours Summary</span>
               <span style={{ fontSize: 12, fontWeight: 600, color: r.utilization > 100 ? "#B85C3A" : C.ash, fontFamily: font.body }}>{fmtPct(Math.min(r.utilization,100))}</span>
             </div>
             <div style={{ height: 6, background: "#EBE9E5", borderRadius: 3, overflow: "hidden", marginBottom: 10 }}>
@@ -916,7 +916,7 @@ export default function RevenueSnapshot() {
       {/* Improve Accuracy banner */}
       {missingAccuracy && (
         <Card style={{ marginBottom: 18, padding: "18px 20px", border: `1px solid ${C.line}` }}>
-          <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: C.taupe, fontFamily: font.body, marginBottom: 6 }}>Improve Accuracy (Optional)</div>
+          <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: C.ash, fontFamily: font.body, marginBottom: 6 }}>Improve Accuracy (Optional)</div>
           <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.6 }}>Want more precise loss + lift estimates? Add no-shows/cancels + retention inputs.</div>
           <div style={{ display: "flex", gap: 10, marginTop: 12, flexWrap: "wrap" }}>
             <SecondaryButton onClick={() => goTo(4)} style={{ padding: "12px 16px" }}>Add Schedule Inputs</SecondaryButton>
@@ -937,11 +937,11 @@ export default function RevenueSnapshot() {
             {FREE_TABS.map(tab => (
               <button key={tab.id} onClick={() => setActiveNav(tab.id)} style={{
                 flex: 1, background: "transparent", border: "none",
-                borderBottom: activeNav === tab.id ? `2px solid ${C.ink}` : "2px solid transparent",
+                borderBottom: activeNav === tab.id ? `2px solid ${C.gold}` : "2px solid transparent",
                 padding: "14px 8px 12px", cursor: "pointer", transition: "all 0.2s",
               }}>
                 <div style={{ fontSize: 14, marginBottom: 2 }}>{tab.icon}</div>
-                <div style={{ fontSize: 11, fontWeight: activeNav === tab.id ? 700 : 500, letterSpacing: 1.5, textTransform: "uppercase", color: activeNav === tab.id ? C.ink : C.ash, fontFamily: font.body }}>{tab.label}</div>
+                <div style={{ fontSize: 11, fontWeight: activeNav === tab.id ? 500 : 300, letterSpacing: 1.5, textTransform: "uppercase", color: activeNav === tab.id ? C.ink : C.ash, fontFamily: font.body }}>{tab.label}</div>
               </button>
             ))}
           </div>
@@ -959,11 +959,11 @@ export default function RevenueSnapshot() {
               <SectionLabel text="How Busy You Are" />
               <Card style={{ marginBottom: 14 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: C.ink, fontFamily: font.body }}>Capacity</span>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: r.utilization >= 80 ? C.ink : C.taupe, fontFamily: font.body }}>{fmtPct(Math.min(r.utilization,100))}</span>
+                  <span style={{ fontSize: 12, fontWeight: 400, color: C.ink, fontFamily: font.body }}>Capacity</span>
+                  <span style={{ fontSize: 14, fontWeight: 400, color: r.utilization >= 80 ? C.goldDark : C.ash, fontFamily: font.display }}>{fmtPct(Math.min(r.utilization,100))}</span>
                 </div>
-                <div style={{ height: 8, background: "#EBE9E5", borderRadius: 4, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${Math.min(r.utilization,100)}%`, background: r.utilization >= 80 ? C.ink : C.taupe, borderRadius: 4, transition: "width 0.6s" }} />
+                <div style={{ height: 6, background: "#EBE9E5", borderRadius: 3, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${Math.min(r.utilization,100)}%`, background: r.utilization >= 80 ? C.gold : C.ash, borderRadius: 3, transition: "width 0.6s" }} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10, fontSize: 12, color: C.ink, fontFamily: font.body }}>
                   <span><strong>{fmtDec(r.totalServiceHrs,0)}</strong> hrs booked</span>
@@ -994,9 +994,9 @@ export default function RevenueSnapshot() {
             <div>
               <SectionLabel text="What You're Losing" />
               <Card style={{ padding: "28px 22px", marginBottom: 20, border: `1px solid ${C.critical}18` }}>
-                <div style={{ fontSize: 42, fontWeight: 500, color: C.ink, fontFamily: font.display, lineHeight: 1.05, marginBottom: 6 }}>{fmt(totalLeakage)}<span style={{ fontSize: 14, color: C.taupe, fontFamily: font.body }}> /year</span></div>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: r.lostRevAnnual > 0 ? C.critical : C.taupe, fontFamily: font.body, marginBottom: 8 }}>{r.lostRevAnnual > 0 ? "Revenue Walking Out the Door" : "Unrealized Revenue Potential"}</div>
-                <div style={{ fontSize: 13, color: C.taupe, fontFamily: font.body, lineHeight: 1.6 }}>{r.lostRevAnnual > 0 ? "This is what no-shows, cancellations, and empty hours are costing you." : r.unusedHours > 0 ? "This is what unfilled capacity is costing you in unrealized revenue." : "Your schedule is well-protected."}</div>
+                <div style={{ fontSize: 42, fontWeight: 300, color: C.ink, fontFamily: font.display, lineHeight: 1.05, marginBottom: 6 }}>{fmt(totalLeakage)}<span style={{ fontSize: 14, color: C.ash, fontFamily: font.body, fontWeight: 300 }}> /year</span></div>
+                <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: r.lostRevAnnual > 0 ? C.critical : C.taupe, fontFamily: font.body, marginBottom: 8 }}>{r.lostRevAnnual > 0 ? "Revenue Walking Out the Door" : "Unrealized Revenue Potential"}</div>
+                <div style={{ fontSize: 13, color: C.ash, fontFamily: font.body, lineHeight: 1.6 }}>{r.lostRevAnnual > 0 ? "This is what no-shows, cancellations, and empty hours are costing you." : r.unusedHours > 0 ? "This is what unfilled capacity is costing you in unrealized revenue." : "Your schedule is well-protected."}</div>
               </Card>
 
               <SectionLabel text="Where It's Going" />
@@ -1006,9 +1006,9 @@ export default function RevenueSnapshot() {
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                     <span style={{ fontSize: 16 }}>⚠️</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.critical, fontFamily: font.body }}>No-Shows & Cancellations</span>
+                    <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.critical, fontFamily: font.body }}>No-Shows & Cancellations</span>
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 500, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.lostRevAnnual)}<span style={{ fontSize: 13, color: C.taupe, fontFamily: font.body }}> /year</span></div>
+                  <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.lostRevAnnual)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> /year</span></div>
                   <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.7 }}>
                     {fmtPct((r.noShow + r.cancel)*100)} of {r.terms.appointment}s don't happen.{" "}
                     That's <strong>{fmt(r.lostRevMonthly)}</strong> every single month.
@@ -1021,9 +1021,9 @@ export default function RevenueSnapshot() {
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                     <span style={{ fontSize: 16 }}>📅</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body }}>Unfilled Hours</span>
+                    <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body }}>Unfilled Hours</span>
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 500, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.unusedHours * r.revenuePerHourWorked * 12)}<span style={{ fontSize: 13, color: C.taupe, fontFamily: font.body }}> /year potential</span></div>
+                  <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.unusedHours * r.revenuePerHourWorked * 12)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> /year potential</span></div>
                   <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.7 }}>
                     <strong>{fmtDec(r.unusedHours,0)}</strong> empty hours every month.{" "}
                     Fill just half = <strong>+{fmt(r.unusedHours * 0.5 * r.revenuePerHourWorked * 12)}/year</strong>.
@@ -1036,9 +1036,9 @@ export default function RevenueSnapshot() {
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                     <span style={{ fontSize: 16 }}>🔄</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body }}>{r.terms.client.charAt(0).toUpperCase() + r.terms.client.slice(1)}s Not Rebooking</span>
+                    <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body }}>{r.terms.client.charAt(0).toUpperCase() + r.terms.client.slice(1)}s Not Rebooking</span>
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 500, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>Only {fmtPct(r.rebook*100)}<span style={{ fontSize: 13, color: C.taupe, fontFamily: font.body }}> book their next {r.terms.appointment}</span></div>
+                  <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>Only {fmtPct(r.rebook*100)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> book their next {r.terms.appointment}</span></div>
                   <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.7 }}>
                     Every {r.terms.client} who doesn't rebook = <strong>{fmt(r.ltv)}</strong> in lifetime value at risk.
                   </div>
@@ -1059,21 +1059,21 @@ export default function RevenueSnapshot() {
                 <>
                   <Card gold style={{ padding: "28px 24px", marginBottom: 20 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-                      <span style={{ fontSize: 20, fontWeight: 700, color: C.taupe, fontFamily: font.display }}>1</span>
-                      <span style={{ fontSize: 18, fontWeight: 600, color: C.ink, fontFamily: font.body }}>{topGap.title}</span>
-                      <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: SEV[topGap.severity]?.color || C.taupe, background: SEV[topGap.severity]?.bg || C.taupe+"12", padding: "4px 10px", borderRadius: 4, fontFamily: font.body, marginLeft: "auto" }}>{SEV[topGap.severity]?.label || topGap.severity}</span>
+                      <span style={{ fontSize: 20, fontWeight: 300, color: C.gold, fontFamily: font.display }}>1</span>
+                      <span style={{ fontSize: 18, fontWeight: 400, color: C.ink, fontFamily: font.display }}>{topGap.title}</span>
+                      <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 1.5, textTransform: "uppercase", color: SEV[topGap.severity]?.color || C.taupe, background: SEV[topGap.severity]?.bg || C.taupe+"12", padding: "4px 10px", borderRadius: 2, fontFamily: font.body, marginLeft: "auto" }}>{SEV[topGap.severity]?.label || topGap.severity}</span>
                     </div>
-                    <div style={{ fontSize: 42, fontWeight: 500, color: C.ink, fontFamily: font.display, lineHeight: 1.05, marginBottom: 4 }}>{fmt(topGap.dollarImpact)}<span style={{ fontSize: 14, color: C.taupe, fontFamily: font.body }}> /year</span></div>
-                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body, marginBottom: 14 }}>Recoverable Revenue</div>
+                    <div style={{ fontSize: 42, fontWeight: 300, color: C.ink, fontFamily: font.display, lineHeight: 1.05, marginBottom: 4 }}>{fmt(topGap.dollarImpact)}<span style={{ fontSize: 14, color: C.ash, fontFamily: font.body }}> /year</span></div>
+                    <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 14 }}>Recoverable Revenue</div>
                     <p style={{ fontSize: 14, color: C.ink, fontFamily: font.body, lineHeight: 1.7, margin: "0 0 16px" }}>
                       {loginData.name ? loginData.name.split(" ")[0] + ", " : ""}{topGap.summary}
                     </p>
                     {topGap.fix && <>
-                      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.ink, fontFamily: font.body, marginBottom: 6 }}>The Fix</div>
+                      <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.ink, fontFamily: font.body, marginBottom: 6 }}>The Fix</div>
                       <p style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.7, margin: "0 0 14px" }}>{topGap.fix}</p>
                     </>}
                     {topGap.result && <>
-                      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.ink, fontFamily: font.body, marginBottom: 6 }}>Expected Result</div>
+                      <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.ink, fontFamily: font.body, marginBottom: 6 }}>Expected Result</div>
                       <p style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.7, margin: 0 }}>{topGap.result}</p>
                     </>}
                   </Card>
@@ -1081,13 +1081,13 @@ export default function RevenueSnapshot() {
                   {/* What else is costing you money? */}
                   {r.rankedGaps.length > 1 && (
                     <Card style={{ padding: "22px 24px", marginBottom: 20, border: `1px solid ${C.line}` }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body, marginBottom: 14 }}>What Else Is Costing You Money?</div>
+                      <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 14 }}>What Else Is Costing You Money?</div>
                       {r.rankedGaps.slice(1).map((g, i) => (
                         <div key={g.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: i < r.rankedGaps.length - 2 ? 14 : 0 }}>
-                          <span style={{ color: C.taupe, fontSize: 13, marginTop: 1 }}>✓</span>
+                          <span style={{ color: C.gold, fontSize: 13, marginTop: 1 }}>✓</span>
                           <div>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: C.ink, fontFamily: font.body }}>Gap #{i+2}: {g.title}</div>
-                            <div style={{ fontSize: 12, color: C.taupe, fontFamily: font.body, marginTop: 2 }}>{fmt(g.dollarImpact)}/year opportunity</div>
+                            <div style={{ fontSize: 13, fontWeight: 400, color: C.ink, fontFamily: font.body }}>Gap #{i+2}: {g.title}</div>
+                            <div style={{ fontSize: 12, color: C.ash, fontFamily: font.body, marginTop: 2 }}>{fmt(g.dollarImpact)}/year opportunity</div>
                           </div>
                         </div>
                       ))}
@@ -1099,15 +1099,15 @@ export default function RevenueSnapshot() {
                 </>
               ) : (
                 <Card style={{ padding: 24, textAlign: "center" }}>
-                  <p style={{ fontSize: 14, color: C.taupe, fontFamily: font.body, margin: 0 }}>No significant gaps detected — your revenue architecture is sound.</p>
+                  <p style={{ fontSize: 14, color: C.ash, fontFamily: font.body, margin: 0 }}>No significant gaps detected — your revenue architecture is sound.</p>
                 </Card>
               )}
 
               {/* ── BIG CTA ── */}
-              <div style={{ padding: "40px 32px", background: C.ink, borderRadius: 6, textAlign: "center" }}>
-                <div style={{ fontSize: 24, fontWeight: 500, color: C.cream, fontFamily: font.display, lineHeight: 1.2, marginBottom: 8 }}>Ready to fix this?</div>
-                <div style={{ fontSize: 13, color: C.ash, fontFamily: font.body, marginBottom: 24 }}>Get your complete 45-day action plan:</div>
-                <div style={{ display: "inline-block", textAlign: "left", marginBottom: 28 }}>
+              <div style={{ padding: "48px 32px", background: C.ink, borderRadius: 2, textAlign: "center" }}>
+                <div style={{ fontSize: 26, fontWeight: 300, color: C.cream, fontFamily: font.display, lineHeight: 1.2, marginBottom: 10 }}>Ready to fix this?</div>
+                <div style={{ fontSize: 13, color: C.ash, fontFamily: font.body, marginBottom: 28, fontWeight: 300 }}>Get your complete 45-day action plan:</div>
+                <div style={{ display: "inline-block", textAlign: "left", marginBottom: 32 }}>
                   {[
                     `All ${r.rankedGaps.length} gap${r.rankedGaps.length !== 1 ? "s" : ""} ranked by impact + $ value`,
                     "Week-by-week action plan",
@@ -1116,17 +1116,17 @@ export default function RevenueSnapshot() {
                     "Copy/export your full report",
                   ].map((item, i) => (
                     <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: i < 4 ? 12 : 0 }}>
-                      <span style={{ color: C.ash, fontSize: 14 }}>✓</span>
-                      <span style={{ fontSize: 14, color: C.cream, fontFamily: font.body, fontWeight: 400 }}>{item}</span>
+                      <span style={{ color: C.gold, fontSize: 13 }}>✓</span>
+                      <span style={{ fontSize: 13, color: C.cream, fontFamily: font.body, fontWeight: 300 }}>{item}</span>
                     </div>
                   ))}
                 </div>
                 <div>
                   <a href={STRIPE.blueprint} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-                    <button style={{ background: C.cream, color: C.ink, border: "none", borderRadius: 4, padding: "18px 48px", fontSize: 15, fontWeight: 600, fontFamily: font.body, letterSpacing: 0.5, cursor: "pointer", transition: "opacity 0.15s", display: "inline-block" }} onMouseOver={e => e.currentTarget.style.opacity="0.9"} onMouseOut={e => e.currentTarget.style.opacity="1"}>Get Complete Plan — $147 →</button>
+                    <button style={{ background: C.gold, color: C.ink, border: "none", borderRadius: 2, padding: "16px 48px", fontSize: 12, fontWeight: 500, fontFamily: font.body, letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", transition: "all 0.3s", display: "inline-block" }} onMouseOver={e => { e.currentTarget.style.background="#E8D5B0"; e.currentTarget.style.boxShadow="0 10px 40px rgba(201,169,110,0.25)"; }} onMouseOut={e => { e.currentTarget.style.background="#C9A96E"; e.currentTarget.style.boxShadow="none"; }}>Get Complete Plan — $147</button>
                   </a>
                 </div>
-                <div style={{ marginTop: 12, fontSize: 12, color: C.ash, fontFamily: font.body }}>One-time payment · Instant access</div>
+                <div style={{ marginTop: 14, fontSize: 11, color: C.ash, fontFamily: font.body, fontWeight: 300, letterSpacing: 0.5 }}>One-time payment · Instant access</div>
               </div>
             </div>
           )}
@@ -1142,11 +1142,11 @@ export default function RevenueSnapshot() {
             {r.rankedGaps.length > 0 ? <>
               {r.rankedGaps.map((g,i) => <GapCard key={g.id} gap={g} rank={i+1} />)}
               <Card gold style={{ padding: "16px 20px", marginBottom: 14 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body, marginBottom: 6 }}>Primary Lever — Next 45 Days</div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: C.ink, fontFamily: font.body }}>{topGap?.title}</div>
-                {topGap?.dollarImpact > 0 && <div style={{ fontSize: 12, color: C.taupe, fontFamily: font.body, marginTop: 4 }}>Est. impact: {fmt(topGap.dollarImpact)}/year</div>}
+                <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 6 }}>Primary Lever — Next 45 Days</div>
+                <div style={{ fontSize: 15, fontWeight: 400, color: C.ink, fontFamily: font.display }}>{topGap?.title}</div>
+                {topGap?.dollarImpact > 0 && <div style={{ fontSize: 12, color: C.ash, fontFamily: font.body, marginTop: 4 }}>Est. impact: {fmt(topGap.dollarImpact)}/year</div>}
               </Card>
-            </> : <Card style={{ padding: 24, textAlign: "center" }}><p style={{ fontSize: 14, color: C.taupe, fontFamily: font.body, margin: 0 }}>No significant gaps identified.</p></Card>}
+            </> : <Card style={{ padding: 24, textAlign: "center" }}><p style={{ fontSize: 14, color: C.ash, fontFamily: font.body, margin: 0 }}>No significant gaps identified.</p></Card>}
             <Divider />
             <SectionLabel text="90-Day Architecture" />
             <SectionHeading text="Three Pillars" sub="Structural adjustments for compounding returns." />
@@ -1157,7 +1157,7 @@ export default function RevenueSnapshot() {
                 { t: "Service Yield", pts: [r.sortedByRPH.length >= 2 ? `Shift volume toward ${r.sortedByRPH[0]?.name||"top service"}` : "Audit duration-to-price ratios", r.avgTicket < 120 ? "Increase ticket via bundling" : "Protect ticket from discounting", "Audit time allocation per service"] },
               ].map((p,i) => (
                 <Card key={i} style={{ padding: "22px 18px" }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: C.taupe, fontFamily: font.body, textTransform: "uppercase", marginBottom: 4 }}>Pillar {i+1}</div>
+                  <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, color: C.gold, fontFamily: font.body, textTransform: "uppercase", marginBottom: 4 }}>Pillar {i+1}</div>
                   <div style={{ fontSize: 18, fontWeight: 500, color: C.ink, fontFamily: font.display, marginBottom: 16, lineHeight: 1.2 }}>{p.t}</div>
                   {p.pts.map((pt,j) => <div key={j} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}><div style={{ width: 5, height: 5, borderRadius: "50%", background: C.ash, flexShrink: 0, marginTop: 6 }} /><span style={{ fontSize: 12, color: C.ink, fontFamily: font.body, lineHeight: 1.5 }}>{pt}</span></div>)}
                 </Card>
@@ -1178,8 +1178,8 @@ export default function RevenueSnapshot() {
             <SectionHeading text="Use These This Week" sub={`Copy-paste language customized for your ${r.terms.service} gaps. Edit the bracketed sections.`} />
             {r.lostRate > 0.05 && (
               <Card style={{ marginBottom: 14, padding: "22px" }}>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body, marginBottom: 10 }}>Deposit / No-Show Policy</div>
-                <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.8, whiteSpace: "pre-wrap", background: "#F0EEEA", borderRadius: 4, padding: "16px 18px", border: `1px solid ${C.line}` }}>
+                <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 10 }}>Deposit / No-Show Policy</div>
+                <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.8, whiteSpace: "pre-wrap", background: "#F0EBE2", borderRadius: 2, padding: "16px 18px", border: `1px solid ${C.line}` }}>
 {`"To guarantee your ${r.terms.appointment} time, we hold it with a [$ amount] deposit — applied directly to your ${r.terms.service}. This protects your slot so no one else can book it.
 
 If something comes up, we just ask for [24/48] hours' notice so we can offer that time to someone on our waitlist. Otherwise, the deposit covers the reserved time."`}
@@ -1188,8 +1188,8 @@ If something comes up, we just ask for [24/48] hours' notice so we can offer tha
             )}
             {r.rebook < 0.7 && (
               <Card style={{ marginBottom: 14, padding: "22px" }}>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body, marginBottom: 10 }}>Checkout Rebooking</div>
-                <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.8, whiteSpace: "pre-wrap", background: "#F0EEEA", borderRadius: 4, padding: "16px 18px", border: `1px solid ${C.line}` }}>
+                <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 10 }}>Checkout Rebooking</div>
+                <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.8, whiteSpace: "pre-wrap", background: "#F0EBE2", borderRadius: 2, padding: "16px 18px", border: `1px solid ${C.line}` }}>
 {`"I want to make sure we lock in your next ${r.terms.appointment} before the best times fill up. Based on what we did today, I'd recommend coming back in [X weeks]. I have [day] at [time] or [day] at [time] — which works better?"
 
 Always offer exactly 2 options. Never ask "would you like to rebook?" — assume the next ${r.terms.appointment}.`}
@@ -1198,8 +1198,8 @@ Always offer exactly 2 options. Never ask "would you like to rebook?" — assume
             )}
             {r.revenuePerHourWorked < (r.target > 0 ? r.target / r.annualHrs : 100) && (
               <Card style={{ marginBottom: 14, padding: "22px" }}>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body, marginBottom: 10 }}>Pricing Reframe</div>
-                <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.8, whiteSpace: "pre-wrap", background: "#F0EEEA", borderRadius: 4, padding: "16px 18px", border: `1px solid ${C.line}` }}>
+                <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 10 }}>Pricing Reframe</div>
+                <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.8, whiteSpace: "pre-wrap", background: "#F0EBE2", borderRadius: 2, padding: "16px 18px", border: `1px solid ${C.line}` }}>
 {`"I've updated my pricing to reflect the [training/experience/demand] for this ${r.terms.service}. The investment for [${r.terms.service} name] is now [$ new price], which includes [specific value detail].
 
 Most ${r.terms.client}s tell me it's the best [result] they've experienced — and I want to make sure you're getting that same level of outcome."`}
@@ -1207,8 +1207,8 @@ Most ${r.terms.client}s tell me it's the best [result] they've experienced — a
               </Card>
             )}
             <Card style={{ marginBottom: 14, padding: "22px" }}>
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.taupe, fontFamily: font.body, marginBottom: 10 }}>{r.terms.service.charAt(0).toUpperCase() + r.terms.service.slice(1)} Upgrade</div>
-              <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.8, whiteSpace: "pre-wrap", background: "#F0EEEA", borderRadius: 4, padding: "16px 18px", border: `1px solid ${C.line}` }}>
+              <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 10 }}>{r.terms.service.charAt(0).toUpperCase() + r.terms.service.slice(1)} Upgrade</div>
+              <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.8, whiteSpace: "pre-wrap", background: "#F0EBE2", borderRadius: 2, padding: "16px 18px", border: `1px solid ${C.line}` }}>
 {`"Based on what I'm seeing today, I'd recommend adding [upgrade ${r.terms.service}] — it'll [specific benefit] and the results will last [X longer / look X better]. It's an additional [$XX] and takes about [X minutes]. Want me to add that in?"
 
 Frame the upgrade around their specific situation, not as a generic upsell.`}
@@ -1264,7 +1264,7 @@ Frame the upgrade around their specific situation, not as a generic upsell.`}
             <SectionLabel text="Copy Summary" />
             <SectionHeading text="Copy + Paste My Audit" sub="Your complete snapshot in one click. Save it, share it, reference it." />
             <Card style={{ padding: "20px 22px" }}>
-              <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.7, whiteSpace: "pre-wrap", background: "#F0EEEA", borderRadius: 4, padding: "16px 18px", border: `1px solid ${C.line}` }}>
+              <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.7, whiteSpace: "pre-wrap", background: "#F0EBE2", borderRadius: 2, padding: "16px 18px", border: `1px solid ${C.line}` }}>
                 {`REVENUE SNAPSHOT — ${data.businessName || "Your Business"}
 ${loginData.name ? `Prepared for: ${loginData.name}` : ""}
 
@@ -1319,9 +1319,9 @@ Directional diagnostic. Not financial or tax advice.`}
 
       {showPricing && <PricingModal onClose={() => setShowPricing(false)} email={loginData.email} auditId={auditId} />}
 
-      <div style={{ maxWidth: step === 6 ? (hasBP ? 960 : 620) : 540, margin: "0 auto", padding: "60px 24px", transition: "max-width 0.4s", width: "100%", overflowX: "hidden" }}>
+      <div style={{ maxWidth: step === 6 ? (hasBP ? 960 : 620) : 540, margin: "0 auto", padding: "48px 24px", transition: "max-width 0.4s", width: "100%", overflowX: "hidden" }}>
         {step >= 2 && step <= 5 && (
-          <div style={{ marginBottom: 48, maxWidth: 440, margin: "0 auto 48px", textAlign: "center" }}>
+          <div style={{ marginBottom: 36, maxWidth: 440, margin: "0 auto 36px", textAlign: "center" }}>
             <div style={{ display: "flex", justifyContent: "center", gap: 32, marginBottom: 14 }}>
               {wizardLabels.map((s,i) => <span key={i} style={{ fontSize: 13, fontWeight: wizardIdx === i ? 400 : 300, fontFamily: font.display, color: wizardIdx >= i ? C.ink : C.line, cursor: "pointer", letterSpacing: 0.5, transition: "color 0.3s" }}>{s}</span>)}
             </div>
@@ -1356,7 +1356,7 @@ Directional diagnostic. Not financial or tax advice.`}
                   <div className="rv-nav" style={{ width: 180, flexShrink: 0, paddingRight: 28, borderRight: `1px solid ${C.line}` }}>
                     {PAID_NAV.map((group, gi) => (
                       <div key={gi} style={{ marginBottom: 16 }}>
-                        <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.ash, fontFamily: font.body, padding: "0 12px", marginBottom: 4 }}>{group.section}</div>
+                        <div style={{ fontSize: 9, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body, padding: "0 12px", marginBottom: 4 }}>{group.section}</div>
                         {group.items.map(n => {
                           const active = activeNav === n.id;
                           const locked = n.lock === "ai" && !hasAi;
