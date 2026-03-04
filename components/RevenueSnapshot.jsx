@@ -1315,20 +1315,18 @@ Directional diagnostic. Not financial or tax advice.`}
   return (
     <div style={{ minHeight: "100vh", background: C.cream, fontFamily: font.body }}>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
-      <style>{`* { box-sizing: border-box; } input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; } input[type="number"] { -moz-appearance: textfield; } ::selection { background: #E8D5B0; color: #1A1A1A; } @media (max-width: 768px) { .rv-flex { flex-direction: column !important; } .rv-nav { display: none !important; } .rv-mnav { display: flex !important; } .rv-content { padding-left: 0 !important; } .rv-3col { grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`* { box-sizing: border-box; } input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; } input[type="number"] { -moz-appearance: textfield; } ::selection { background: #E8D5B0; color: #1A1A1A; } ::placeholder { color: #C4BFB8; font-weight: 300; } @media (max-width: 768px) { .rv-flex { flex-direction: column !important; } .rv-nav { display: none !important; } .rv-mnav { display: flex !important; } .rv-content { padding-left: 0 !important; } .rv-3col { grid-template-columns: 1fr !important; } }`}</style>
 
       {showPricing && <PricingModal onClose={() => setShowPricing(false)} email={loginData.email} auditId={auditId} />}
 
       <div style={{ maxWidth: step === 6 ? (hasBP ? 960 : 620) : 540, margin: "0 auto", padding: "60px 24px", transition: "max-width 0.4s", width: "100%", overflowX: "hidden" }}>
-        {step >= 2 && step <= 5 && <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 8, textAlign: "center" }}>The Revenue Snapshot</div>}
-
         {step >= 2 && step <= 5 && (
-          <div style={{ marginBottom: 32, maxWidth: 420, margin: "0 auto 32px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-              {wizardLabels.map((s,i) => <span key={i} style={{ fontSize: 10, fontWeight: wizardIdx === i ? 600 : 400, letterSpacing: 1.5, textTransform: "uppercase", color: wizardIdx >= i ? C.ink : C.line, fontFamily: font.body, cursor: "pointer" }}>{s}</span>)}
+          <div style={{ marginBottom: 48, maxWidth: 440, margin: "0 auto 48px", textAlign: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: 32, marginBottom: 14 }}>
+              {wizardLabels.map((s,i) => <span key={i} style={{ fontSize: 13, fontWeight: wizardIdx === i ? 400 : 300, fontFamily: font.display, color: wizardIdx >= i ? C.ink : C.line, cursor: "pointer", letterSpacing: 0.5, transition: "color 0.3s" }}>{s}</span>)}
             </div>
-            <div style={{ height: 1, background: C.line, position: "relative" }}>
-              <div style={{ height: 2, background: C.gold, borderRadius: 1, width: `${(wizardIdx/3)*100}%`, transition: "width 0.5s", position: "absolute", top: -0.5 }} />
+            <div style={{ height: 1, background: C.line, position: "relative", maxWidth: 280, margin: "0 auto" }}>
+              <div style={{ height: 1, background: C.gold, width: `${(wizardIdx/3)*100}%`, transition: "width 0.5s ease", position: "absolute", top: 0 }} />
             </div>
           </div>
         )}
