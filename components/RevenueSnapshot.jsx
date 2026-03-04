@@ -86,54 +86,72 @@ const fmtDuration = (m) => { if (!m) return "0 min"; const h = Math.floor(m/60),
 
 // ─── Industry Templates ───
 const INDUSTRIES = {
-  beauty: {
-    label: "Hair / Beauty / Esthetics",
+  hair: {
+    label: "Hair",
     terms: { client: "client", appointment: "appointment", service: "service", provider: "stylist" },
     services: [
       { name: "Haircut & Style", price: "75", duration: "60", bookings: "40" },
-      { name: "Color Service", price: "150", duration: "120", bookings: "20" },
-      { name: "Blowout", price: "45", duration: "30", bookings: "25" },
-      { name: "Treatment / Add-On", price: "35", duration: "20", bookings: "15" },
+      { name: "Color (Single Process)", price: "150", duration: "90", bookings: "18" },
+      { name: "Balayage / Highlights", price: "225", duration: "150", bookings: "10" },
+      { name: "Blowout", price: "50", duration: "30", bookings: "25" },
+      { name: "Deep Conditioning", price: "40", duration: "20", bookings: "15" },
+      { name: "Men's Cut", price: "35", duration: "30", bookings: "30" },
+      { name: "Keratin / Smoothing", price: "300", duration: "150", bookings: "4" },
+    ],
+  },
+  beauty: {
+    label: "Beauty / Makeup",
+    terms: { client: "client", appointment: "appointment", service: "service", provider: "artist" },
+    services: [
+      { name: "Full Glam Makeup", price: "150", duration: "60", bookings: "12" },
+      { name: "Bridal Makeup", price: "250", duration: "90", bookings: "4" },
+      { name: "Bridal Trial", price: "125", duration: "75", bookings: "4" },
+      { name: "Bridesmaid / Event", price: "100", duration: "45", bookings: "10" },
+      { name: "Lesson / Tutorial", price: "120", duration: "60", bookings: "6" },
+      { name: "Editorial / Photoshoot", price: "200", duration: "90", bookings: "3" },
+      { name: "Lash Application", price: "35", duration: "15", bookings: "20" },
     ],
   },
   fitness: {
-    label: "Personal Training / Fitness",
+    label: "Personal Training",
     terms: { client: "client", appointment: "session", service: "training", provider: "trainer" },
     services: [
-      { name: "1-on-1 Training", price: "100", duration: "60", bookings: "50" },
-      { name: "Partner Session", price: "140", duration: "60", bookings: "12" },
-      { name: "Assessment / Consult", price: "75", duration: "45", bookings: "8" },
+      { name: "1-on-1 Training (60 min)", price: "75", duration: "60", bookings: "50" },
+      { name: "1-on-1 Training (30 min)", price: "45", duration: "30", bookings: "20" },
+      { name: "Partner Session", price: "120", duration: "60", bookings: "12" },
+      { name: "Small Group (3-5)", price: "35", duration: "60", bookings: "40" },
+      { name: "Assessment / Consult", price: "100", duration: "60", bookings: "6" },
+      { name: "Sport-Specific Training", price: "90", duration: "60", bookings: "15" },
+      { name: "Nutrition Plan Add-on", price: "75", duration: "30", bookings: "10" },
     ],
   },
   spa: {
-    label: "Spa / Massage / Bodywork",
+    label: "Spa / Massage",
     terms: { client: "client", appointment: "appointment", service: "treatment", provider: "therapist" },
     services: [
-      { name: "60-Min Massage", price: "120", duration: "60", bookings: "35" },
-      { name: "90-Min Massage", price: "170", duration: "90", bookings: "15" },
-      { name: "Facial", price: "110", duration: "60", bookings: "20" },
-    ],
-  },
-  dental: {
-    label: "Dental / Medical Aesthetic",
-    terms: { client: "patient", appointment: "appointment", service: "procedure", provider: "provider" },
-    services: [
-      { name: "Cleaning / Hygiene", price: "200", duration: "60", bookings: "40" },
-      { name: "Whitening", price: "450", duration: "90", bookings: "8" },
-      { name: "Consultation", price: "100", duration: "30", bookings: "15" },
+      { name: "Swedish Massage (60 min)", price: "110", duration: "60", bookings: "30" },
+      { name: "Deep Tissue (60 min)", price: "130", duration: "60", bookings: "20" },
+      { name: "Hot Stone Massage", price: "150", duration: "75", bookings: "10" },
+      { name: "90-Min Massage", price: "170", duration: "90", bookings: "12" },
+      { name: "Classic Facial", price: "100", duration: "60", bookings: "18" },
+      { name: "Hydrafacial / Advanced", price: "200", duration: "60", bookings: "8" },
+      { name: "Body Scrub & Wrap", price: "160", duration: "75", bookings: "6" },
     ],
   },
   coaching: {
     label: "Coaching / Consulting",
     terms: { client: "client", appointment: "session", service: "engagement", provider: "coach" },
     services: [
-      { name: "Strategy Session", price: "250", duration: "60", bookings: "20" },
+      { name: "Strategy Session (60 min)", price: "250", duration: "60", bookings: "20" },
+      { name: "Discovery Call", price: "0", duration: "30", bookings: "12" },
       { name: "Group Coaching", price: "150", duration: "90", bookings: "8" },
-      { name: "VIP Day", price: "1500", duration: "480", bookings: "2" },
+      { name: "VIP Half-Day", price: "1500", duration: "240", bookings: "2" },
+      { name: "Follow-Up Session", price: "175", duration: "45", bookings: "15" },
+      { name: "Intensive / Workshop", price: "500", duration: "180", bookings: "3" },
     ],
   },
   other: {
-    label: "Other / Custom",
+    label: "Other",
     terms: { client: "client", appointment: "appointment", service: "service", provider: "professional" },
     services: [],
   },
@@ -651,7 +669,16 @@ export default function RevenueSnapshot() {
     avgClientLifespanMonths: "", avgVisitsPerYear: "", newClientsPerMonth: "", rebookingRate: "",
     services: [{ name: "", price: "", duration: "", bookings: "" }],
   });
-  const update = (k, v) => setData(d => ({ ...d, [k]: v }));
+  const update = (k, v) => {
+    if (k === "industry" && v !== "other") {
+      const tmpl = INDUSTRIES[v]?.services || [];
+      if (tmpl.length) {
+        setData(d => ({ ...d, [k]: v, services: tmpl.map(s => ({ ...s })) }));
+        return;
+      }
+    }
+    setData(d => ({ ...d, [k]: v }));
+  };
 
   // Persistence
   useEffect(() => {
@@ -832,8 +859,8 @@ export default function RevenueSnapshot() {
           <SectionHeading text="Current Revenue Position" sub="Averages and estimates work great here." />
           <InputField label="Business Name" value={data.businessName} onChange={v => update("businessName", v)} type="text" placeholder="e.g. The Method Studio" />
           <div style={{ marginBottom: 22 }}>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: C.ink, marginBottom: 4, fontFamily: font.body }}>Industry</label>
-            <div style={{ fontSize: 11, color: C.ash, marginBottom: 8, fontFamily: font.body, lineHeight: 1.5 }}>This personalizes your scripts and pre-fills example services.</div>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: C.ink, marginBottom: 4, fontFamily: font.body }}>Industry</label>
+            <div style={{ fontSize: 11, color: C.ash, marginBottom: 8, fontFamily: font.body, lineHeight: 1.5 }}>This pre-fills your service menu with typical pricing. You can edit everything.</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {Object.entries(INDUSTRIES).map(([id, ind]) => (
                 <button key={id} onClick={() => update("industry", id)} style={{
@@ -865,15 +892,6 @@ export default function RevenueSnapshot() {
           <SectionLabel text="Step 02 — Services" />
           <SectionHeading text="Your Service Menu" sub={`List each ${r.terms.service} with price, duration, and monthly volume.`} />
           <HintBox>Estimates are fine. Directional accuracy is what matters.</HintBox>
-          {data.industry && data.industry !== "other" && data.services.length === 1 && !data.services[0].name && (
-            <Card style={{ marginBottom: 16, padding: "16px 18px", border: `1px solid ${C.line}` }}>
-              <div style={{ fontSize: 12, color: C.ink, fontFamily: font.body, lineHeight: 1.5, marginBottom: 10 }}>Start with example {INDUSTRIES[data.industry]?.label || ""} services? You can edit everything.</div>
-              <SecondaryButton onClick={() => {
-                const tmpl = INDUSTRIES[data.industry]?.services || [];
-                if (tmpl.length) setData(d => ({ ...d, services: tmpl.map(s => ({ ...s })) }));
-              }} style={{ padding: "10px 16px", fontSize: 11 }}>Load {INDUSTRIES[data.industry]?.label || ""} Templates</SecondaryButton>
-            </Card>
-          )}
           {data.services.map((s,i) => <ServiceInput key={i} service={s} index={i} onChange={s => updSvc(i,s)} onRemove={() => rmSvc(i)} canRemove={data.services.length > 1} />)}
           <button onClick={addSvc} style={{ width: "100%", background: "transparent", border: `1px dashed ${C.gold}40`, borderRadius: 2, padding: 14, color: C.gold, fontSize: 12, cursor: "pointer", fontFamily: font.body, fontWeight: 500, letterSpacing: 1.5 }}>+ Add Service</button>
           {r.totalServiceHrs > 0 && <Card style={{ marginTop: 20, padding: "18px 20px", border: `1px solid ${r.utilization > 100 ? "#D4785055" : C.line}` }}>
