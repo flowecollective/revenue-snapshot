@@ -158,19 +158,19 @@ function Card({ children, style={}, gold=false }) {
 function MetricCard({ label, value, sub, gold=false, large=false, hero=false }) {
   return (
     <Card gold={gold} style={{ textAlign: (large || hero) ? "center" : "left" }}>
-      <div style={{ fontSize: hero ? 12 : 10, fontWeight: 500, letterSpacing: hero ? 2 : 3, textTransform: "uppercase", color: C.ash, fontFamily: font.body, marginBottom: hero ? 10 : large ? 14 : 8 }}>{label}</div>
-      <div style={{ fontSize: hero ? 64 : large ? 38 : 26, fontWeight: 500, fontFamily: font.display, color: gold ? C.gold : C.ink, lineHeight: 1.05 }}>{value}</div>
-      {sub && <div style={{ fontSize: hero ? 13 : 12, color: C.taupe, fontFamily: font.body, marginTop: hero ? 14 : large ? 12 : 6, lineHeight: 1.5 }}>{sub}</div>}
+      <div style={{ fontSize: hero ? 10 : 9, fontWeight: 500, letterSpacing: hero ? 3 : 3, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: hero ? 14 : large ? 16 : 10 }}>{label}</div>
+      <div style={{ fontSize: hero ? 60 : large ? 36 : 26, fontWeight: 300, fontFamily: font.display, color: gold ? C.goldDark : C.ink, lineHeight: 1.05 }}>{value}</div>
+      {sub && <div style={{ fontSize: hero ? 13 : 12, color: C.ash, fontFamily: font.body, marginTop: hero ? 16 : large ? 14 : 8, lineHeight: 1.6, fontWeight: 300 }}>{sub}</div>}
     </Card>
   );
 }
 
-function Divider() { return <div style={{ height: 1, background: C.gold, margin: "48px 0", width: 60 }} />; }
+function Divider() { return <div style={{ height: 1, background: C.gold, margin: "56px 0", width: 60, opacity: 0.5 }} />; }
 function SectionLabel({ text }) { return <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 12 }}>{text}</div>; }
 function SectionHeading({ text, sub }) {
   return <div style={{ marginBottom: 40 }}>
-    {text && <h2 style={{ fontSize: 38, fontWeight: 500, color: C.ink, fontFamily: font.display, margin: 0, lineHeight: 1.1 }}>{text}</h2>}
-    {sub && <p style={{ fontSize: 13, color: C.taupe, fontFamily: font.body, margin: "12px 0 0", lineHeight: 1.6 }}>{sub}</p>}
+    {text && <h2 style={{ fontSize: 32, fontWeight: 300, color: C.ink, fontFamily: font.display, margin: 0, lineHeight: 1.15 }}>{text}</h2>}
+    {sub && <p style={{ fontSize: 13, color: C.ash, fontFamily: font.body, margin: "14px 0 0", lineHeight: 1.7, fontWeight: 300 }}>{sub}</p>}
   </div>;
 }
 function HintBox({ children, style={} }) { return <div style={{ background: "#F0EBE2", border: `1px solid ${C.line}`, borderRadius: 2, padding: "14px 16px", marginBottom: 20, ...style }}><div style={{ fontSize: 12, color: C.taupe, fontFamily: font.body, lineHeight: 1.6 }}>{children}</div></div>; }
@@ -196,7 +196,7 @@ function InputField({ label, hint, value, onChange, prefix, suffix, type="number
   const iType = isMoney && !focused ? "text" : type;
   return (
     <div style={{ marginBottom: 22 }}>
-      <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: C.ink, marginBottom: 4, fontFamily: font.body }}>{label}</label>
+      <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: C.ink, marginBottom: 4, fontFamily: font.body }}>{label}</label>
       {hint && <div style={{ fontSize: 11, color: C.taupe, marginBottom: 8, fontFamily: font.body, lineHeight: 1.5 }}>{hint}</div>}
       <div style={{ display: "flex", alignItems: "center", background: C.cardBg, border: `1px solid ${focused ? C.gold : C.line}`, borderRadius: 2, overflow: "hidden", transition: "border-color 0.2s" }}>
         {prefix && <span style={{ padding: "0 0 0 14px", color: C.ash, fontSize: 14, fontFamily: font.body }}>{prefix}</span>}
@@ -213,17 +213,17 @@ function InputField({ label, hint, value, onChange, prefix, suffix, type="number
 function GapCard({ gap, rank }) {
   const s = SEV[gap.severity] || SEV.minor;
   return (
-    <Card style={{ padding: "22px", marginBottom: 14, border: `1px solid ${s.border}` }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-        <span style={{ fontSize: 12, fontWeight: 700, color: C.ink, fontFamily: font.body, width: 24, height: 24, borderRadius: "50%", background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{rank}</span>
-        <span style={{ fontSize: 15, fontWeight: 600, color: C.ink, fontFamily: font.body, flex: 1 }}>{gap.title}</span>
-        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: s.color, background: s.bg, padding: "4px 10px", borderRadius: 4, fontFamily: font.body }}>{s.label}</span>
+    <Card style={{ padding: "24px", marginBottom: 16, border: `1px solid ${s.border}` }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+        <span style={{ fontSize: 11, fontWeight: 600, color: C.ink, fontFamily: font.body, width: 26, height: 26, borderRadius: "50%", background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{rank}</span>
+        <span style={{ fontSize: 16, fontWeight: 400, color: C.ink, fontFamily: font.display, flex: 1 }}>{gap.title}</span>
+        <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: s.color, background: s.bg, padding: "4px 10px", borderRadius: 2, fontFamily: font.body }}>{s.label}</span>
       </div>
-      <p style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.7, margin: 0 }}>{gap.summary}</p>
+      <p style={{ fontSize: 13, color: C.ash, fontFamily: font.body, lineHeight: 1.8, margin: 0, fontWeight: 300 }}>{gap.summary}</p>
       {gap.dollarImpact > 0 && (
-        <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${C.line}`, display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.ash, fontFamily: font.body }}>Est. Annual Impact</span>
-          <span style={{ fontSize: 14, fontWeight: 600, color: gap.severity === "critical" ? s.color : C.taupe, fontFamily: font.body }}>{fmt(gap.dollarImpact)}</span>
+        <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${C.line}`, display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body }}>Est. Annual Impact</span>
+          <span style={{ fontSize: 15, fontWeight: 400, color: gap.severity === "critical" ? s.color : C.goldDark, fontFamily: font.display }}>{fmt(gap.dollarImpact)}</span>
         </div>
       )}
     </Card>
@@ -312,7 +312,7 @@ function PricingModal({ onClose, email, auditId }) {
           <p style={{ fontSize: 11, color: C.ash, fontFamily: font.body, margin: "10px auto 0" }}>Lift Plan + AI apply to this audit only. Unlimited Mode unlocks everything.</p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
           {/* Lift Plan */}
           <Card gold style={{ padding: 18, border: `1px solid ${C.taupe}35` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -741,14 +741,15 @@ export default function RevenueSnapshot() {
   const renderStep = () => {
     switch(step) {
       case 0: return (
-        <div style={{ textAlign: "center", padding: "48px 20px", maxWidth: 440, margin: "0 auto" }}>
-          <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 32 }}>Flowe Collective</div>
-          <h1 style={{ fontSize: 44, fontWeight: 300, color: C.ink, fontFamily: font.display, lineHeight: 1.1, margin: "0 0 20px" }}>The Revenue<br/><em style={{ fontStyle: "italic", fontWeight: 400, color: C.goldDark }}>Snapshot</em></h1>
-          <div style={{ width: 40, height: 1, background: C.gold, margin: "0 auto 28px" }} />
-          <p style={{ fontSize: 15, color: C.goldDark, fontFamily: font.display, margin: "0 0 40px", fontStyle: "italic" }}>Precision creates power.</p>
-          <p style={{ fontSize: 13, color: C.ash, fontFamily: font.body, margin: "0 auto 32px", maxWidth: 380, lineHeight: 1.7, fontWeight: 300 }}>Designed for appointment-based service professionals. Understand exactly how your business generates revenue and where the structural gaps are.</p>
+        <div style={{ textAlign: "center", padding: "80px 20px 60px", maxWidth: 480, margin: "0 auto" }}>
+          <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 40 }}>Flowe Collective</div>
+          <h1 style={{ fontSize: 52, fontWeight: 300, color: C.ink, fontFamily: font.display, lineHeight: 1.08, margin: "0 0 8px" }}>The Revenue</h1>
+          <h1 style={{ fontSize: 52, fontWeight: 400, fontStyle: "italic", color: C.goldDark, fontFamily: font.display, lineHeight: 1.08, margin: "0 0 28px" }}>Snapshot</h1>
+          <div style={{ width: 50, height: 1, background: C.gold, margin: "0 auto 32px" }} />
+          <p style={{ fontSize: 16, color: C.goldDark, fontFamily: font.display, margin: "0 0 24px", fontStyle: "italic", lineHeight: 1.6 }}>Precision creates power.</p>
+          <p style={{ fontSize: 14, color: C.ash, fontFamily: font.body, margin: "0 auto 48px", maxWidth: 400, lineHeight: 1.8, fontWeight: 300 }}>Designed for appointment-based service professionals. Understand exactly how your business generates revenue and where the structural gaps are.</p>
           <PrimaryButton onClick={() => goTo(1)}>Begin Assessment</PrimaryButton>
-          <p style={{ fontSize: 11, color: C.ash, fontFamily: font.body, marginTop: 24, fontWeight: 300 }}>~3 minutes · Averages and estimates are perfectly fine</p>
+          <p style={{ fontSize: 11, color: C.ash, fontFamily: font.body, marginTop: 28, fontWeight: 300, letterSpacing: 0.5 }}>~3 minutes · Averages and estimates are perfectly fine</p>
         </div>
       );
 
@@ -819,10 +820,10 @@ export default function RevenueSnapshot() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {Object.entries(INDUSTRIES).map(([id, ind]) => (
                 <button key={id} onClick={() => update("industry", id)} style={{
-                  background: data.industry === id ? C.ink : "transparent",
-                  color: data.industry === id ? C.cream : C.taupe,
-                  border: `1px solid ${data.industry === id ? C.ink : C.line}`,
-                  borderRadius: 4, padding: "8px 14px", fontSize: 11, fontWeight: 500,
+                  background: data.industry === id ? C.gold : "transparent",
+                  color: data.industry === id ? C.ink : C.ash,
+                  border: `1px solid ${data.industry === id ? C.gold : C.line}`,
+                  borderRadius: 2, padding: "8px 14px", fontSize: 11, fontWeight: 500,
                   fontFamily: font.body, cursor: "pointer", transition: "all 0.15s",
                 }}>{ind.label}</button>
               ))}
@@ -832,7 +833,7 @@ export default function RevenueSnapshot() {
           <InputField label="Target Annual Income" value={data.targetAnnualIncome} onChange={v => update("targetAnnualIncome", v)} prefix="$" />
           <Divider />
           <SectionHeading text="Current Operating Schedule" />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, maxWidth: 360 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(90px, 1fr))", gap: 12 }}>
             <InputField label="Days/Wk" value={data.workingDaysPerWeek} onChange={v => update("workingDaysPerWeek", v)} />
             <InputField label="Hrs/Day" value={data.hoursPerDay} onChange={v => update("hoursPerDay", v)} />
             <InputField label="Wks/Yr" value={data.weeksPerYear} onChange={v => update("weeksPerYear", v)} />
@@ -857,14 +858,14 @@ export default function RevenueSnapshot() {
             </Card>
           )}
           {data.services.map((s,i) => <ServiceInput key={i} service={s} index={i} onChange={s => updSvc(i,s)} onRemove={() => rmSvc(i)} canRemove={data.services.length > 1} />)}
-          <button onClick={addSvc} style={{ width: "100%", background: "transparent", border: `1px dashed ${C.line}`, borderRadius: 4, padding: 14, color: C.ash, fontSize: 12, cursor: "pointer", fontFamily: font.body, fontWeight: 600, letterSpacing: 1 }}>+ Add Service</button>
+          <button onClick={addSvc} style={{ width: "100%", background: "transparent", border: `1px dashed ${C.gold}40`, borderRadius: 2, padding: 14, color: C.gold, fontSize: 12, cursor: "pointer", fontFamily: font.body, fontWeight: 500, letterSpacing: 1.5 }}>+ Add Service</button>
           {r.totalServiceHrs > 0 && <Card style={{ marginTop: 20, padding: "18px 20px", border: `1px solid ${r.utilization > 100 ? "#D4785055" : C.line}` }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
               <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: C.taupe, fontFamily: font.body, textTransform: "uppercase" }}>Service Hours Summary</span>
               <span style={{ fontSize: 12, fontWeight: 600, color: r.utilization > 100 ? "#B85C3A" : C.ash, fontFamily: font.body }}>{fmtPct(Math.min(r.utilization,100))}</span>
             </div>
             <div style={{ height: 6, background: "#EBE9E5", borderRadius: 3, overflow: "hidden", marginBottom: 10 }}>
-              <div style={{ height: "100%", width: `${Math.min(r.utilization,100)}%`, background: r.utilization > 100 ? "#B85C3A" : C.ash, borderRadius: 3, transition: "width 0.4s" }} />
+              <div style={{ height: "100%", width: `${Math.min(r.utilization,100)}%`, background: r.utilization > 100 ? "#B85C3A" : C.gold, borderRadius: 3, transition: "width 0.4s" }} />
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: C.ink, fontFamily: font.body }}>
               <span><strong>{fmtDec(r.totalServiceHrs,1)}</strong> hrs booked</span>
@@ -1318,7 +1319,7 @@ Directional diagnostic. Not financial or tax advice.`}
 
       {showPricing && <PricingModal onClose={() => setShowPricing(false)} email={loginData.email} auditId={auditId} />}
 
-      <div style={{ maxWidth: step === 6 ? (hasBP ? 960 : 620) : 540, margin: "0 auto", padding: "40px 24px", transition: "max-width 0.4s", width: "100%" }}>
+      <div style={{ maxWidth: step === 6 ? (hasBP ? 960 : 620) : 540, margin: "0 auto", padding: "60px 24px", transition: "max-width 0.4s", width: "100%", overflowX: "hidden" }}>
         {step >= 2 && step <= 5 && <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 8, textAlign: "center" }}>The Revenue Snapshot</div>}
 
         {step >= 2 && step <= 5 && (
@@ -1343,13 +1344,13 @@ Directional diagnostic. Not financial or tax advice.`}
         <div ref={contentRef} style={{ opacity: animate ? 1 : 0, transform: animate ? "translateY(0)" : "translateY(8px)", transition: "opacity 0.3s, transform 0.3s" }}>
           {step === 6 ? (
             <div>
-              <div style={{ textAlign: "center", marginBottom: 32 }}>
-                <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 10 }}>Flowe Collective</div>
-                <h1 style={{ fontSize: 36, fontWeight: 300, color: C.ink, fontFamily: font.display, margin: "0 0 6px", lineHeight: 1.1 }}>The Revenue Snapshot</h1>
-                <div style={{ fontSize: 14, color: C.ash, fontFamily: font.display, fontStyle: "italic" }}>{data.businessName || "Your Business"}{loginData.name ? ` · ${loginData.name}` : ""}</div>
-                <div style={{ width: 40, height: 1, background: C.gold, margin: "20px auto 12px" }} />
-                <div style={{ fontSize: 10, color: C.ash, fontFamily: font.body, fontWeight: 300 }}>Directional diagnostic. Not financial or tax advice.</div>
-                {hasBP && <div style={{ marginTop: 8, display: "inline-block", background: C.gold+"18", padding: "4px 12px", borderRadius: 2, fontSize: 10, fontWeight: 500, letterSpacing: 1.5, textTransform: "uppercase", color: C.goldDark, fontFamily: font.body }}>{isPlatformTier ? "Unlimited Mode" : hasAi ? "Lift Plan + AI" : "Lift Plan"} ✓</div>}
+              <div style={{ textAlign: "center", marginBottom: 48 }}>
+                <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: C.gold, fontFamily: font.body, marginBottom: 14 }}>Flowe Collective</div>
+                <h1 style={{ fontSize: 38, fontWeight: 300, color: C.ink, fontFamily: font.display, margin: "0 0 6px", lineHeight: 1.1 }}>The Revenue Snapshot</h1>
+                <div style={{ fontSize: 15, color: C.ash, fontFamily: font.display, fontStyle: "italic" }}>{data.businessName || "Your Business"}{loginData.name ? ` · ${loginData.name}` : ""}</div>
+                <div style={{ width: 40, height: 1, background: C.gold, margin: "24px auto 14px" }} />
+                <div style={{ fontSize: 10, color: C.ash, fontFamily: font.body, fontWeight: 300, letterSpacing: 0.5 }}>Directional diagnostic. Not financial or tax advice.</div>
+                {hasBP && <div style={{ marginTop: 10, display: "inline-block", background: C.gold+"18", padding: "5px 14px", borderRadius: 2, fontSize: 9, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.goldDark, fontFamily: font.body }}>{isPlatformTier ? "Unlimited Mode" : hasAi ? "Lift Plan + AI" : "Lift Plan"} ✓</div>}
               </div>
               <div className="rv-flex" style={{ display: "flex", gap: 0 }}>
                 {/* Grouped Sidebar — visible when Lift Plan unlocked */}
