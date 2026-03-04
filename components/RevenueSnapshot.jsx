@@ -574,18 +574,18 @@ Generate the 45-day execution plan. Prioritize the #1 ranked gap. Be specific to
 // NAV STRUCTURE — tiered: free horizontal tabs → paid grouped sidebar
 // ═══════════════════════════════════════════
 const FREE_TABS = [
-  { id: "numbers", icon: "📊", label: "The Numbers" },
-  { id: "leak", icon: "💸", label: "The Leak" },
-  { id: "fix", icon: "🎯", label: "The Fix" },
+  { id: "numbers", icon: "—", label: "The Numbers" },
+  { id: "leak", icon: "—", label: "The Leak" },
+  { id: "fix", icon: "—", label: "The Fix" },
 ];
 const PAID_NAV = [
   { section: "OVERVIEW", items: [
-    { id: "numbers", label: "Snapshot", icon: "📊" },
-    { id: "leak", label: "Losses", icon: "💸" },
-    { id: "fix", label: "Top Fix", icon: "🎯" },
+    { id: "numbers", label: "Snapshot", icon: "·" },
+    { id: "leak", label: "Losses", icon: "·" },
+    { id: "fix", label: "Top Fix", icon: "·" },
   ]},
   { section: "YOUR PLAN", items: [
-    { id: "lift45", label: "45-Day Action", icon: "📋" },
+    { id: "lift45", label: "45-Day Action", icon: "·" },
     { id: "scripts", label: "Client Scripts", icon: "💬" },
     { id: "scorecard", label: "Weekly Scorecard", icon: "✅" },
   ]},
@@ -778,7 +778,7 @@ export default function RevenueSnapshot() {
             </PrimaryButton>
           </>}
           {loginStep === "verify" && <>
-            <NoteBox icon="📧">A 6-digit code has been sent to <strong>{loginData.email}</strong>. Check your inbox (and spam).</NoteBox>
+            <NoteBox>A 6-digit code has been sent to <strong>{loginData.email}</strong>. Check your inbox (and spam).</NoteBox>
             <InputField label="Verification Code" value={verifyCode} onChange={setVerifyCode} type="text" placeholder="000000" />
             {authError && <div style={{ fontSize: 12, color: C.critical, fontFamily: font.body, marginBottom: 12 }}>{authError}</div>}
             <PrimaryButton onClick={async () => {
@@ -890,7 +890,7 @@ export default function RevenueSnapshot() {
         <div style={{ maxWidth: 420, margin: "0 auto" }}>
           <SectionLabel text="Step 04 — Retention" />
           <SectionHeading text="Client Lifetime Architecture" sub="How long clients stay and how often they return." />
-          <NoteBox icon="📋">If you use a booking system (Square, Vagaro, Boulevard, etc.), pull reports for these averages. Otherwise, estimates work.</NoteBox>
+          <NoteBox>If you use a booking system (Square, Vagaro, Boulevard, etc.), pull reports for these averages. Otherwise, estimates work.</NoteBox>
           <InputField label="Average Client Relationship Length" hint="From first appointment to last — how many months before most clients stop coming back?" value={data.avgClientLifespanMonths} onChange={v => update("avgClientLifespanMonths", v)} suffix="months" placeholder="e.g. 12" />
           <InputField label="Average Visits Per Year" hint="Monthly ≈ 12. Every 6 weeks ≈ 8. Quarterly ≈ 4." value={data.avgVisitsPerYear} onChange={v => update("avgVisitsPerYear", v)} suffix="visits/year" placeholder="e.g. 8" />
           <InputField label="New Clients Per Month" value={data.newClientsPerMonth} onChange={v => update("newClientsPerMonth", v)} suffix="clients" placeholder="e.g. 6" />
@@ -930,7 +930,7 @@ export default function RevenueSnapshot() {
         <div>
           {/* ── Edit Numbers Link ── */}
           <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
-            <button onClick={() => goTo(2)} style={{ background: "transparent", border: "none", cursor: "pointer", fontSize: 12, color: C.ash, fontFamily: font.body, padding: "4px 8px", textDecoration: "underline" }}>✏️ Edit Numbers</button>
+            <button onClick={() => goTo(2)} style={{ background: "transparent", border: "none", cursor: "pointer", fontSize: 12, color: C.ash, fontFamily: font.body, padding: "4px 8px", textDecoration: "underline" }}>Edit Numbers</button>
           </div>
           {/* ── Horizontal Tab Bar ── */}
           <div style={{ display: "flex", borderBottom: `1px solid ${C.line}`, marginBottom: 28 }}>
@@ -940,7 +940,6 @@ export default function RevenueSnapshot() {
                 borderBottom: activeNav === tab.id ? `2px solid ${C.gold}` : "2px solid transparent",
                 padding: "14px 8px 12px", cursor: "pointer", transition: "all 0.2s",
               }}>
-                <div style={{ fontSize: 14, marginBottom: 2 }}>{tab.icon}</div>
                 <div style={{ fontSize: 11, fontWeight: activeNav === tab.id ? 500 : 300, letterSpacing: 1.5, textTransform: "uppercase", color: activeNav === tab.id ? C.ink : C.ash, fontFamily: font.body }}>{tab.label}</div>
               </button>
             ))}
@@ -972,7 +971,7 @@ export default function RevenueSnapshot() {
               </Card>
               {r.unusedHours > 0 && (
                 <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.6, padding: "0 2px", marginBottom: 14 }}>
-                  💡 You have <strong>{fmtDec(r.unusedHours,0)} empty hours</strong> every month.
+                  You have <strong>{fmtDec(r.unusedHours,0)} empty hours</strong> every month.
                 </div>
               )}
               {r.target > 0 && <>
@@ -1005,7 +1004,7 @@ export default function RevenueSnapshot() {
               {r.lostRevAnnual > 0 && (
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                    <span style={{ fontSize: 16 }}>⚠️</span>
+                    <span style={{ fontSize: 14, color: "#C9A96E", fontFamily: "Cormorant Garamond, serif" }}>//</span>
                     <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.critical, fontFamily: font.body }}>No-Shows & Cancellations</span>
                   </div>
                   <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.lostRevAnnual)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> /year</span></div>
@@ -1020,7 +1019,7 @@ export default function RevenueSnapshot() {
               {r.unusedHours > 0 && (
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                    <span style={{ fontSize: 16 }}>📅</span>
+                    <span style={{ fontSize: 14, color: "#C9A96E", fontFamily: "Cormorant Garamond, serif" }}>//</span>
                     <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body }}>Unfilled Hours</span>
                   </div>
                   <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.unusedHours * r.revenuePerHourWorked * 12)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> /year potential</span></div>
@@ -1035,7 +1034,7 @@ export default function RevenueSnapshot() {
               {r.rebook > 0 && r.rebook < 1 && (
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                    <span style={{ fontSize: 16 }}>🔄</span>
+                    <span style={{ fontSize: 14, color: "#C9A96E", fontFamily: "Cormorant Garamond, serif" }}>//</span>
                     <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body }}>{r.terms.client.charAt(0).toUpperCase() + r.terms.client.slice(1)}s Not Rebooking</span>
                   </div>
                   <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>Only {fmtPct(r.rebook*100)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> book their next {r.terms.appointment}</span></div>
@@ -1214,7 +1213,7 @@ Most ${r.terms.client}s tell me it's the best [result] they've experienced — a
 Frame the upgrade around their specific situation, not as a generic upsell.`}
               </div>
             </Card>
-            <NoteBox icon="📋">These scripts adapt to your audit data. Customize the bracketed sections and test them this week. Track results in the Scorecard tab.</NoteBox>
+            <NoteBox>These scripts adapt to your audit data. Customize the bracketed sections and test them this week. Track results in the Scorecard tab.</NoteBox>
           </div>
         ) : <LockedSection title="Client Scripts" lockType="blueprint" onUnlock={() => setShowPricing(true)} email={loginData.email} />
       )}
