@@ -1,98 +1,128 @@
 import { NextResponse } from "next/server";
-import PDFDocument from "pdfkit";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 
-// Colors
-const GOLD = [201, 169, 110];
-const GOLD_DARK = [168, 136, 77];
-const CHARCOAL = [26, 26, 26];
-const MUTED = [107, 100, 96];
-const CREAM = [250, 246, 240];
-const LINE = [224, 218, 208];
+const GOLD = rgb(201/255, 169/255, 110/255);
+const GOLD_DARK = rgb(168/255, 136/255, 77/255);
+const CHARCOAL = rgb(26/255, 26/255, 26/255);
+const MUTED = rgb(107/255, 100/255, 96/255);
+const LINE = rgb(224/255, 218/255, 208/255);
+const WHITE = rgb(1, 1, 1);
 
 function stripHtml(html) {
   return (html || "")
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<\/p>/gi, "\n\n")
     .replace(/<\/li>/gi, "\n")
-    .replace(/<li>/gi, "  • ")
+    .replace(/<li>/gi, "  \u2022 ")
     .replace(/<[^>]+>/g, "")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'")
-    .replace(/&check;/g, "✓")
-    .replace(/&middot;/g, "·")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
+    .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&check;/g, "\u2713")
+    .replace(/&middot;/g, "\u00B7").replace(/&nbsp;/g, " ")
+    .replace(/\n{3,}/g, "\n\n").trim();
 }
 
-function drawLine(doc, y, width) {
-  doc.strokeColor(LINE).lineWidth(0.5)
-    .moveTo(50, y).lineTo(width - 50, y).stroke();
+function wrapText(text, font, size, maxWidth) {
+  const words = text.split(" ");
+  const lines = [];
+  let current = "";
+  for (const word of words) {
+    const test = current ? current + " " + word : word;
+    const w = font.widthOfTextAtSize(test, size);
+    if (w > maxWidth && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = test;
+    }
+  }
+  if (current) lines.push(current);
+  return lines;
 }
 
-function drawGoldLine(doc, y, width) {
-  doc.strokeColor(GOLD).lineWidth(1)
-    .moveTo(50, y).lineTo(width - 50, y).stroke();
+function drawText(page, text, x, y, font, size, color, maxWidth) {
+  const paragraphs = text.split("\n");
+  let curY = y;
+  const lineHeight = size * 1.6;
+  for (const para of paragraphs) {
+    if (!para.trim()) { curY -= lineHeight * 0.5; continue; }
+    const lines = wrapText(para, font, size, maxWidth);
+    for (const line of lines) {
+      if (curY < 60) return curY; // stop if near bottom
+      page.drawText(line, { x, y: curY, size, font, color });
+      curY -= lineHeight;
+    }
+  }
+  return curY;
 }
 
 export async function POST(req) {
   try {
-    const { name, archetype, geneKey, sections, strengths, challenge, next, secondary, birthday } = await req.json();
-
+    const { name, archetype, geneKey, sections, strengths, challenge, next, secondary } = await req.json();
     if (!archetype || !geneKey) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
     }
 
-    const doc = new PDFDocument({
-      size: "A4",
-      margins: { top: 50, bottom: 50, left: 50, right: 50 },
-      info: {
-        Title: "Beauty Career Archetype Reading - " + (name || ""),
-        Author: "Flowe Collective",
-      },
-    });
-
-    const chunks = [];
-    doc.on("data", (chunk) => chunks.push(chunk));
-
-    const pageWidth = doc.page.width;
-    const contentWidth = pageWidth - 100;
+    const doc = await PDFDocument.create();
+    const helvetica = await doc.embedFont(StandardFonts.Helvetica);
+    const helveticaBold = await doc.embedFont(StandardFonts.HelveticaBold);
+    const helveticaOblique = await doc.embedFont(StandardFonts.HelveticaOblique);
     const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    const pw = 595.28; // A4 width
+    const ph = 841.89; // A4 height
+    const margin = 50;
+    const cw = pw - margin * 2;
+
+    let page = doc.addPage([pw, ph]);
+    let y = ph - margin;
+
+    function newPageIfNeeded(needed) {
+      if (y < needed + 60) {
+        page = doc.addPage([pw, ph]);
+        y = ph - margin;
+      }
+    }
+
+    function drawLine(ly, color) {
+      page.drawLine({ start: { x: margin, y: ly }, end: { x: pw - margin, y: ly }, thickness: 0.5, color: color || LINE });
+    }
 
     // ═══ HEADER ═══
-    doc.fontSize(24).fillColor(CHARCOAL).font("Helvetica")
-      .text("FLOWE", 50, 50, { align: "center", characterSpacing: 6 });
+    const logoText = "F L O W E";
+    const logoW = helvetica.widthOfTextAtSize(logoText, 22);
+    page.drawText(logoText, { x: (pw - logoW) / 2, y, size: 22, font: helvetica, color: CHARCOAL });
+    y -= 18;
+    drawLine(y, GOLD);
+    y -= 28;
 
-    drawGoldLine(doc, 82, pageWidth);
+    const nameText = archetype.name || "";
+    const nameW = helvetica.widthOfTextAtSize(nameText, 20);
+    page.drawText(nameText, { x: (pw - nameW) / 2, y, size: 20, font: helvetica, color: CHARCOAL });
+    y -= 20;
 
-    doc.fontSize(22).fillColor(CHARCOAL).font("Helvetica")
-      .text(archetype.name || "", 50, 100, { align: "center" });
+    const tagText = archetype.tagline || "";
+    const tagW = helveticaOblique.widthOfTextAtSize(tagText, 10);
+    page.drawText(tagText, { x: (pw - tagW) / 2, y, size: 10, font: helveticaOblique, color: MUTED });
+    y -= 18;
 
-    doc.fontSize(11).fillColor(MUTED).font("Helvetica-Oblique")
-      .text(archetype.tagline || "", 50, 128, { align: "center" });
-
-    doc.fontSize(9).fillColor(MUTED).font("Helvetica")
-      .text("Prepared for " + (name || "") + "  •  " + today, 50, 150, { align: "center" });
+    const prepText = "Prepared for " + (name || "") + "  \u00B7  " + today;
+    const prepW = helvetica.widthOfTextAtSize(prepText, 8);
+    page.drawText(prepText, { x: (pw - prepW) / 2, y, size: 8, font: helvetica, color: MUTED });
+    y -= 30;
 
     // ═══ GENE KEY BOX ═══
-    let y = 180;
-    doc.rect(50, y, contentWidth, 24).fill(CREAM).stroke(GOLD);
-    doc.fontSize(8).fillColor(GOLD_DARK).font("Helvetica-Bold")
-      .text("YOUR GENE KEY", 60, y + 8, { characterSpacing: 2 });
+    page.drawRectangle({ x: margin, y: y - 16, width: cw, height: 16, color: rgb(250/255, 246/255, 240/255), borderColor: GOLD, borderWidth: 0.5 });
+    page.drawText("YOUR GENE KEY", { x: margin + 10, y: y - 12, size: 7, font: helveticaBold, color: GOLD_DARK });
+    y -= 30;
 
-    y += 32;
-    doc.fontSize(16).fillColor(CHARCOAL).font("Helvetica")
-      .text("Gate " + geneKey.gate + " — " + geneKey.name, 60, y);
+    const gateText = "Gate " + geneKey.gate + " - " + geneKey.name;
+    page.drawText(gateText, { x: margin + 10, y, size: 14, font: helvetica, color: CHARCOAL });
+    y -= 18;
 
-    y += 24;
-    doc.fontSize(9).fillColor(MUTED).font("Helvetica")
-      .text("Shadow: " + geneKey.shadow + "    Gift: " + geneKey.gift + "    Siddhi: " + geneKey.siddhi, 60, y);
-
-    y += 24;
-    drawLine(doc, y, pageWidth);
-    y += 12;
+    const metaText = "Shadow: " + geneKey.shadow + "    Gift: " + geneKey.gift + "    Siddhi: " + geneKey.siddhi;
+    page.drawText(metaText, { x: margin + 10, y, size: 8, font: helvetica, color: MUTED });
+    y -= 20;
+    drawLine(y);
+    y -= 16;
 
     // ═══ GENE KEY SECTIONS ═══
     const sectionData = [
@@ -105,97 +135,88 @@ export async function POST(req) {
     for (const sec of sectionData) {
       const text = stripHtml(sec.content);
       if (!text) continue;
-
-      if (y > doc.page.height - 120) {
-        doc.addPage();
-        y = 50;
-      }
-
-      doc.fontSize(8).fillColor(GOLD_DARK).font("Helvetica-Bold")
-        .text(sec.title, 60, y, { characterSpacing: 1.5 });
-      y += 16;
-
-      doc.fontSize(10).fillColor(CHARCOAL).font("Helvetica")
-        .text(text, 60, y, { width: contentWidth - 20, lineGap: 4 });
-      y = doc.y + 16;
-
-      drawLine(doc, y, pageWidth);
-      y += 12;
+      newPageIfNeeded(80);
+      page.drawText(sec.title, { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
+      y -= 14;
+      y = drawText(page, text, margin + 10, y, helvetica, 9, CHARCOAL, cw - 20);
+      y -= 10;
+      newPageIfNeeded(20);
+      drawLine(y);
+      y -= 14;
     }
 
     // ═══ STRENGTHS ═══
-    if (y > doc.page.height - 150) { doc.addPage(); y = 50; }
-
-    doc.rect(50, y, contentWidth, 0).fill(CREAM);
-    doc.fontSize(8).fillColor(GOLD_DARK).font("Helvetica-Bold")
-      .text("YOUR 3 STRENGTHS", 60, y + 4, { characterSpacing: 1.5 });
-    y += 20;
-
+    newPageIfNeeded(100);
+    page.drawText("YOUR 3 STRENGTHS", { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
+    y -= 14;
     if (strengths) {
       for (const s of strengths) {
-        doc.fontSize(10).fillColor(CHARCOAL).font("Helvetica")
-          .text("•  " + s, 60, y, { width: contentWidth - 20, lineGap: 3 });
-        y = doc.y + 6;
+        const lines = wrapText("\u2022  " + s, helvetica, 9, cw - 20);
+        for (const line of lines) {
+          if (y < 60) { page = doc.addPage([pw, ph]); y = ph - margin; }
+          page.drawText(line, { x: margin + 10, y, size: 9, font: helvetica, color: CHARCOAL });
+          y -= 14;
+        }
+        y -= 2;
       }
     }
-    y += 8;
+    y -= 10;
 
     // ═══ CHALLENGE ═══
-    if (y > doc.page.height - 100) { doc.addPage(); y = 50; }
-
-    doc.fontSize(8).fillColor(GOLD_DARK).font("Helvetica-Bold")
-      .text("YOUR HIDDEN CHALLENGE", 60, y, { characterSpacing: 1.5 });
-    y += 16;
-
-    doc.strokeColor(GOLD).lineWidth(2)
-      .moveTo(60, y).lineTo(60, y + 40).stroke();
-    doc.fontSize(10).fillColor(CHARCOAL).font("Helvetica")
-      .text(challenge || "", 72, y, { width: contentWidth - 32, lineGap: 4 });
-    y = doc.y + 16;
+    newPageIfNeeded(80);
+    page.drawText("YOUR HIDDEN CHALLENGE", { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
+    y -= 14;
+    // Gold left border
+    const challengeText = stripHtml(challenge || "");
+    const chLines = wrapText(challengeText, helvetica, 9, cw - 40);
+    const chStartY = y;
+    for (const line of chLines) {
+      page.drawText(line, { x: margin + 22, y, size: 9, font: helvetica, color: CHARCOAL });
+      y -= 14;
+    }
+    page.drawLine({ start: { x: margin + 12, y: chStartY + 4 }, end: { x: margin + 12, y: y + 10 }, thickness: 2, color: GOLD });
+    y -= 14;
 
     // ═══ NEXT STEPS ═══
-    doc.fontSize(8).fillColor(GOLD_DARK).font("Helvetica-Bold")
-      .text("WHAT TO DO NEXT", 60, y, { characterSpacing: 1.5 });
-    y += 16;
-    doc.fontSize(10).fillColor(CHARCOAL).font("Helvetica")
-      .text(next || "", 60, y, { width: contentWidth - 20, lineGap: 4 });
-    y = doc.y + 16;
+    newPageIfNeeded(60);
+    page.drawText("WHAT TO DO NEXT", { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
+    y -= 14;
+    y = drawText(page, stripHtml(next || ""), margin + 10, y, helvetica, 9, CHARCOAL, cw - 20);
+    y -= 14;
 
     // ═══ SECONDARY ═══
     if (secondary) {
-      doc.fontSize(8).fillColor(GOLD_DARK).font("Helvetica-Bold")
-        .text("SECONDARY INFLUENCE", 60, y, { characterSpacing: 1.5 });
-      y += 16;
-      doc.fontSize(10).fillColor(CHARCOAL).font("Helvetica-Bold")
-        .text(secondary.name, 60, y, { continued: true }).font("Helvetica")
-        .text(" — " + secondary.tagline);
-      y = doc.y + 16;
+      newPageIfNeeded(40);
+      page.drawText("SECONDARY INFLUENCE", { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
+      y -= 14;
+      page.drawText(secondary.name + " - " + secondary.tagline, { x: margin + 10, y, size: 9, font: helvetica, color: CHARCOAL });
+      y -= 20;
     }
 
     // ═══ CTA BOX ═══
-    if (y > doc.page.height - 120) { doc.addPage(); y = 50; }
-    y += 8;
-    doc.rect(50, y, contentWidth, 80).stroke(GOLD);
-    doc.fontSize(14).fillColor(CHARCOAL).font("Helvetica")
-      .text("Need clarity on your next move?", 60, y + 12, { align: "center", width: contentWidth - 20 });
-    doc.fontSize(10).fillColor(MUTED).font("Helvetica")
-      .text("Book a 30-minute Career Direction Call", 60, y + 32, { align: "center", width: contentWidth - 20 });
-    doc.fontSize(11).fillColor(GOLD_DARK).font("Helvetica-Bold")
-      .text("flowecollective.com/call", 60, y + 50, { align: "center", width: contentWidth - 20 });
+    newPageIfNeeded(90);
+    y -= 8;
+    page.drawRectangle({ x: margin, y: y - 60, width: cw, height: 60, borderColor: GOLD, borderWidth: 0.5 });
+    const ctaTitle = "Need clarity on your next move?";
+    const ctaTW = helvetica.widthOfTextAtSize(ctaTitle, 13);
+    page.drawText(ctaTitle, { x: (pw - ctaTW) / 2, y: y - 18, size: 13, font: helvetica, color: CHARCOAL });
+    const ctaSub = "Book a 30-minute Career Direction Call";
+    const ctaSW = helvetica.widthOfTextAtSize(ctaSub, 9);
+    page.drawText(ctaSub, { x: (pw - ctaSW) / 2, y: y - 34, size: 9, font: helvetica, color: MUTED });
+    const ctaUrl = "flowecollective.com/call";
+    const ctaUW = helveticaBold.widthOfTextAtSize(ctaUrl, 10);
+    page.drawText(ctaUrl, { x: (pw - ctaUW) / 2, y: y - 50, size: 10, font: helveticaBold, color: GOLD_DARK });
 
     // ═══ FOOTER ═══
-    y = doc.page.height - 40;
-    drawLine(doc, y, pageWidth);
-    doc.fontSize(8).fillColor(MUTED).font("Helvetica")
-      .text("Flowe Collective  •  flowecollective.com  •  @flowecollective_", 50, y + 8, { align: "center", width: contentWidth });
+    const footY = 35;
+    page.drawLine({ start: { x: margin, y: footY + 10 }, end: { x: pw - margin, y: footY + 10 }, thickness: 0.5, color: LINE });
+    const footText = "Flowe Collective  \u00B7  flowecollective.com  \u00B7  @flowecollective_";
+    const footW = helvetica.widthOfTextAtSize(footText, 7);
+    page.drawText(footText, { x: (pw - footW) / 2, y: footY, size: 7, font: helvetica, color: MUTED });
 
-    doc.end();
+    const pdfBytes = await doc.save();
 
-    const buffer = await new Promise((resolve) => {
-      doc.on("end", () => resolve(Buffer.concat(chunks)));
-    });
-
-    return new NextResponse(buffer, {
+    return new NextResponse(pdfBytes, {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
