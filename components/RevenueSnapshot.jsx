@@ -128,13 +128,12 @@ const INDUSTRIES = {
     label: "Hair",
     terms: { client: "client", appointment: "appointment", service: "service", provider: "stylist" },
     services: [
-      { name: "Haircut & Style", price: "75", duration: "60", bookings: "40" },
-      { name: "Color (Single Process)", price: "150", duration: "90", bookings: "18" },
-      { name: "Balayage / Highlights", price: "225", duration: "150", bookings: "10" },
-      { name: "Blowout", price: "50", duration: "30", bookings: "25" },
-      { name: "Deep Conditioning", price: "40", duration: "20", bookings: "15" },
-      { name: "Men's Cut", price: "35", duration: "30", bookings: "30" },
-      { name: "Keratin / Smoothing", price: "300", duration: "150", bookings: "4" },
+      { name: "Haircut & Blowout", price: "85", duration: "60", bookings: "40" },
+      { name: "Blowout", price: "55", duration: "45", bookings: "20" },
+      { name: "Full Color", price: "300", duration: "180", bookings: "12" },
+      { name: "Partial Color", price: "225", duration: "150", bookings: "10" },
+      { name: "Single Process", price: "135", duration: "90", bookings: "15" },
+      { name: "Treatment", price: "250", duration: "150", bookings: "10" },
     ],
   },
   beauty: {
@@ -148,44 +147,6 @@ const INDUSTRIES = {
       { name: "Lesson / Tutorial", price: "120", duration: "60", bookings: "6" },
       { name: "Editorial / Photoshoot", price: "200", duration: "90", bookings: "3" },
       { name: "Lash Application", price: "35", duration: "15", bookings: "20" },
-    ],
-  },
-  fitness: {
-    label: "Personal Training",
-    terms: { client: "client", appointment: "session", service: "training", provider: "trainer" },
-    services: [
-      { name: "1-on-1 Training (60 min)", price: "75", duration: "60", bookings: "50" },
-      { name: "1-on-1 Training (30 min)", price: "45", duration: "30", bookings: "20" },
-      { name: "Partner Session", price: "120", duration: "60", bookings: "12" },
-      { name: "Small Group (3-5)", price: "35", duration: "60", bookings: "40" },
-      { name: "Assessment / Consult", price: "100", duration: "60", bookings: "6" },
-      { name: "Sport-Specific Training", price: "90", duration: "60", bookings: "15" },
-      { name: "Nutrition Plan Add-on", price: "75", duration: "30", bookings: "10" },
-    ],
-  },
-  spa: {
-    label: "Spa / Massage",
-    terms: { client: "client", appointment: "appointment", service: "treatment", provider: "therapist" },
-    services: [
-      { name: "Swedish Massage (60 min)", price: "110", duration: "60", bookings: "30" },
-      { name: "Deep Tissue (60 min)", price: "130", duration: "60", bookings: "20" },
-      { name: "Hot Stone Massage", price: "150", duration: "75", bookings: "10" },
-      { name: "90-Min Massage", price: "170", duration: "90", bookings: "12" },
-      { name: "Classic Facial", price: "100", duration: "60", bookings: "18" },
-      { name: "Hydrafacial / Advanced", price: "200", duration: "60", bookings: "8" },
-      { name: "Body Scrub & Wrap", price: "160", duration: "75", bookings: "6" },
-    ],
-  },
-  coaching: {
-    label: "Coaching / Consulting",
-    terms: { client: "client", appointment: "session", service: "engagement", provider: "coach" },
-    services: [
-      { name: "Strategy Session (60 min)", price: "250", duration: "60", bookings: "20" },
-      { name: "Discovery Call", price: "0", duration: "30", bookings: "12" },
-      { name: "Group Coaching", price: "150", duration: "90", bookings: "8" },
-      { name: "VIP Half-Day", price: "1500", duration: "240", bookings: "2" },
-      { name: "Follow-Up Session", price: "175", duration: "45", bookings: "15" },
-      { name: "Intensive / Workshop", price: "500", duration: "180", bookings: "3" },
     ],
   },
   other: {
@@ -538,8 +499,8 @@ Available Hours/Month: ${fmtDec(r.monthlyHrs, 0)}
 Booked Hours/Month: ${fmtDec(r.totalServiceHrs, 0)}
 Average Ticket: ${fmt(r.avgTicket)}
 Total Monthly Bookings: ${fmtNum(r.totalBookings)}
-No-Show Rate: ${fmtPct(r.noShow*100)}
-Late Cancel Rate: ${fmtPct(r.cancel*100)}
+No-Shows Per Month: ${r.noShowCount}
+Last-Minute Cancels Per Month: ${r.cancelCount}
 Annual Revenue Lost to No-Shows/Cancels: ${fmt(r.lostRevAnnual)}
 Client Lifespan: ${r.lifespan} months
 Visits Per Year: ${r.visitsPerYear}
@@ -777,7 +738,7 @@ export default function RevenueSnapshot() {
   const r = useMemo(() => {
     const rev = parseFloat(data.monthlyRevenue)||0, target = parseFloat(data.targetAnnualIncome)||0;
     const daysWk = parseFloat(data.workingDaysPerWeek)||5, hrsDay = parseFloat(data.hoursPerDay)||8, wksYr = parseFloat(data.weeksPerYear)||50;
-    const noShow = (parseFloat(data.noShowRate)||0)/100, cancel = (parseFloat(data.cancellationRate)||0)/100;
+    const noShowCount = parseFloat(data.noShowRate)||0, cancelCount = parseFloat(data.cancellationRate)||0;
     const lifespan = parseFloat(data.avgClientLifespanMonths)||12, visitsPerYear = parseFloat(data.avgVisitsPerYear)||12;
     const visitsPerMo = visitsPerYear/12, newClients = parseFloat(data.newClientsPerMonth)||0, rebook = (parseFloat(data.rebookingRate)||0)/100;
 
@@ -798,7 +759,11 @@ export default function RevenueSnapshot() {
     const utilization = monthlyHrs > 0 ? (totalServiceHrs/monthlyHrs)*100 : 0;
     const unusedHours = Math.max(0, monthlyHrs - totalServiceHrs);
     const avgTicket = totalBookings > 0 ? totalServiceRev/totalBookings : 0;
-    const lostRate = noShow + cancel, lostRevMonthly = rev*lostRate, lostRevAnnual = lostRevMonthly*12;
+    const noShow = totalBookings > 0 ? noShowCount/totalBookings : 0;
+    const cancel = totalBookings > 0 ? cancelCount/totalBookings : 0;
+    const lostRate = noShow + cancel;
+    const lostRevMonthly = (noShowCount + cancelCount) * avgTicket;
+    const lostRevAnnual = lostRevMonthly * 12;
     const ltv = avgTicket * visitsPerMo * lifespan;
     const requiredWeeklyRev = target > 0 && wksYr > 0 ? target/wksYr : 0;
     const revenueGap = Math.max(0, requiredWeeklyRev - weeklyRev), revenueGapAnnual = revenueGap*wksYr;
@@ -827,7 +792,7 @@ export default function RevenueSnapshot() {
     if (rebook >= 0.7) score += 7; else if (rebook >= 0.4) score += 2; else score -= 3;
     score = Math.max(0, Math.min(100, Math.round(score)));
 
-    return { rev, annualRev, weeklyRev, ninetyDayRev, target, revenuePerHour, revenuePerHourWorked, utilization, unusedHours, avgTicket, monthlyHrs, weeklyHrs, annualHrs, totalServiceHrs, totalBookings, noShow, cancel, lostRate, lostRevMonthly, lostRevAnnual, ltv, lifespan, visitsPerMo, visitsPerYear, newClients, rebook, requiredWeeklyRev, revenueGap, revenueGapAnnual, revenueAtCapacity, services, sortedByRPH, totalServiceRev, rankedGaps, score, daysWk, hrsDay, wksYr, terms };
+    return { rev, annualRev, weeklyRev, ninetyDayRev, target, revenuePerHour, revenuePerHourWorked, utilization, unusedHours, avgTicket, monthlyHrs, weeklyHrs, annualHrs, totalServiceHrs, totalBookings, noShow, cancel, noShowCount, cancelCount, lostRate, lostRevMonthly, lostRevAnnual, ltv, lifespan, visitsPerMo, visitsPerYear, newClients, rebook, requiredWeeklyRev, revenueGap, revenueGapAnnual, revenueAtCapacity, services, sortedByRPH, totalServiceRev, rankedGaps, score, daysWk, hrsDay, wksYr, terms };
   }, [data]);
 
   // Service CRUD
@@ -954,7 +919,7 @@ export default function RevenueSnapshot() {
         <div style={{ maxWidth: 460, margin: "0 auto" }}>
           <SectionLabel text="Step 02 — Services" />
           <SectionHeading text="Your Service Menu" sub={`List each ${r.terms.service} with price, duration, and monthly volume.`} />
-          <HintBox>Estimates are fine. Directional accuracy is what matters.</HintBox>
+          <HintBox>Include blowout time and price in your color services. For example, if your full color is $250 and blowout is $50, enter $300 and the total chair time. Standalone blowout is its own line.</HintBox>
           {data.services.map((s,i) => <ServiceInput key={i} service={s} index={i} onChange={s => updSvc(i,s)} onRemove={() => rmSvc(i)} canRemove={data.services.length > 1} />)}
           <button onClick={addSvc} style={{ width: "100%", background: "transparent", border: `1px dashed ${C.gold}40`, borderRadius: 2, padding: 14, color: C.gold, fontSize: 12, cursor: "pointer", fontFamily: font.body, fontWeight: 500, letterSpacing: 1.5 }}>+ Add Service</button>
           {r.totalServiceHrs > 0 && <Card style={{ marginTop: 20, padding: "18px 20px", border: `1px solid ${r.utilization > 100 ? "#D4785055" : C.line}` }}>
@@ -977,9 +942,9 @@ export default function RevenueSnapshot() {
       case 4: return (
         <div style={{ maxWidth: 420, margin: "0 auto" }}>
           <SectionLabel text="Step 03 — Schedule Protection" />
-          <SectionHeading text="Cancellations & No-Shows" sub="Every missed appointment is unrecoverable revenue." />
-          <InputField label="No-Show Rate" hint="Out of 100 appointments, how many don't show?" value={data.noShowRate} onChange={v => update("noShowRate", v)} suffix="%" placeholder="e.g. 5" />
-          <InputField label="Late Cancellation Rate" hint="How many cancel too late to rebook?" value={data.cancellationRate} onChange={v => update("cancellationRate", v)} suffix="%" placeholder="e.g. 8" />
+          <SectionHeading text="Missed Appointments" sub="Every missed appointment is unrecoverable revenue." />
+          <InputField label="No-Shows Per Month" hint="How many clients just don't show up in a typical month?" value={data.noShowRate} onChange={v => update("noShowRate", v)} suffix="/month" placeholder="e.g. 3" />
+          <InputField label="Last-Minute Cancellations Per Month" hint="How many cancel too late for you to fill the slot?" value={data.cancellationRate} onChange={v => update("cancellationRate", v)} suffix="/month" placeholder="e.g. 5" />
           <NavButtons onBack={() => goTo(3)} onNext={() => { save(); goTo(5); }} canNext nextLabel="Continue to Retention →" />
         </div>
       );
@@ -1083,6 +1048,49 @@ export default function RevenueSnapshot() {
                   <MetricCard label="Current Trajectory" value={fmt(r.annualRev)} sub={r.revenueGap > 0 ? `${fmt(r.revenueGapAnnual)} below target` : "On pace"} gold={r.revenueGap > 0} />
                 </div>
               </>}
+
+              {/* ── SERVICE YIELD TABLE ── */}
+              {r.sortedByRPH.length > 0 && <>
+                <Divider />
+                <SectionLabel text="Service Yield Breakdown" />
+                <div style={{ fontSize: 12, color: C.ash, fontFamily: font.body, marginBottom: 14, lineHeight: 1.5 }}>
+                  Your services ranked by what they actually earn per hour. Higher-priced services aren't always your most profitable.
+                </div>
+                <Card style={{ padding: 0, overflow: "hidden" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", padding: "10px 16px", background: C.cream, borderBottom: `1px solid ${C.line}` }}>
+                    {["Service", "Price", "Time", "$/Hour", "Mo. Rev"].map(h => (
+                      <div key={h} style={{ fontSize: 9, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.gold, fontFamily: font.body }}>{h}</div>
+                    ))}
+                  </div>
+                  {r.sortedByRPH.map((s, i) => {
+                    const isTop = i === 0;
+                    const isBottom = i === r.sortedByRPH.length - 1 && r.sortedByRPH.length > 1;
+                    return (
+                      <div key={i} style={{
+                        display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", padding: "12px 16px",
+                        borderBottom: i < r.sortedByRPH.length - 1 ? `1px solid ${C.line}` : "none",
+                        background: isTop ? `${C.gold}08` : "transparent",
+                      }}>
+                        <div style={{ fontSize: 12, fontFamily: font.body, color: C.ink, fontWeight: isTop ? 500 : 300 }}>
+                          {s.name || "Service " + (i+1)}
+                          {isTop && <span style={{ marginLeft: 8, fontSize: 8, fontWeight: 500, letterSpacing: 1, textTransform: "uppercase", color: C.gold, background: `${C.gold}15`, padding: "2px 6px" }}>Best</span>}
+                          {isBottom && <span style={{ marginLeft: 8, fontSize: 8, fontWeight: 500, letterSpacing: 1, textTransform: "uppercase", color: C.critical, background: `${C.critical}10`, padding: "2px 6px" }}>Lowest</span>}
+                        </div>
+                        <div style={{ fontSize: 12, fontFamily: font.body, color: C.ink, fontWeight: 300 }}>{fmt(s.priceNum)}</div>
+                        <div style={{ fontSize: 12, fontFamily: font.body, color: C.ash, fontWeight: 300 }}>{fmtDuration(s.durationNum)}</div>
+                        <div style={{ fontSize: 12, fontFamily: font.display, color: isTop ? C.goldDark : isBottom ? C.critical : C.ink, fontWeight: 400 }}>{fmt(s.revenuePerHour)}</div>
+                        <div style={{ fontSize: 12, fontFamily: font.body, color: C.ash, fontWeight: 300 }}>{fmt(s.monthlyRev)}</div>
+                      </div>
+                    );
+                  })}
+                </Card>
+                {r.sortedByRPH.length >= 2 && (
+                  <div style={{ fontSize: 12, color: C.ink, fontFamily: font.body, lineHeight: 1.6, padding: "12px 2px 0", fontWeight: 300 }}>
+                    Your best earner <strong>{r.sortedByRPH[0].name}</strong> makes <strong>{fmt(r.sortedByRPH[0].revenuePerHour)}/hr</strong> while <strong>{r.sortedByRPH[r.sortedByRPH.length-1].name}</strong> only makes <strong>{fmt(r.sortedByRPH[r.sortedByRPH.length-1].revenuePerHour)}/hr</strong>. Every hour spent on a low-yield service is an hour not spent on a high-yield one.
+                  </div>
+                )}
+              </>}
+
               <div style={{ marginTop: 20 }}>
                 <PrimaryButton onClick={() => setActiveNav("leak")} style={{ width: "100%" }}>Continue to "The Leak" →</PrimaryButton>
               </div>
@@ -1106,12 +1114,14 @@ export default function RevenueSnapshot() {
                 <Card style={{ marginBottom: 14, padding: "22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                     <IcoClock s={16} />
-                    <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.critical, fontFamily: font.body }}>No-Shows & Cancellations</span>
+                    <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: C.critical, fontFamily: font.body }}>Missed Appointments</span>
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.lostRevAnnual)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> /year</span></div>
+                  <div style={{ fontSize: 24, fontWeight: 300, color: C.ink, fontFamily: font.display, marginBottom: 6 }}>{fmt(r.lostRevMonthly)}<span style={{ fontSize: 13, color: C.ash, fontFamily: font.body }}> /month lost</span></div>
                   <div style={{ fontSize: 13, color: C.ink, fontFamily: font.body, lineHeight: 1.7 }}>
-                    {fmtPct((r.noShow + r.cancel)*100)} of {r.terms.appointment}s don't happen.{" "}
-                    That's <strong>{fmt(r.lostRevMonthly)}</strong> every single month.
+                    {r.noShowCount > 0 && <><strong>{r.noShowCount}</strong> no-show{r.noShowCount !== 1 ? "s" : ""}</>}
+                    {r.noShowCount > 0 && r.cancelCount > 0 && " and "}
+                    {r.cancelCount > 0 && <><strong>{r.cancelCount}</strong> last-minute cancel{r.cancelCount !== 1 ? "s" : ""}</>}
+                    {" "}every month at {fmt(r.avgTicket)} average = <strong>{fmt(r.lostRevAnnual)}/year</strong> walking out the door.
                   </div>
                 </Card>
               )}
@@ -1376,8 +1386,8 @@ Capacity Utilization: ${fmtPct(Math.min(r.utilization,100))}
 Weekly Revenue: ${fmt(r.weeklyRev)}${r.target > 0 ? `\nAnnual Target: ${fmt(r.target)}` : ""}${r.revenueGap > 0 ? `\nRevenue Gap: ${fmt(r.revenueGapAnnual)}/year` : ""}
 
 REVENUE LEAKS
-No-Show Rate: ${fmtPct(r.noShow*100)}
-Late Cancel Rate: ${fmtPct(r.cancel*100)}
+No-Shows Per Month: ${r.noShowCount}
+Last-Minute Cancels Per Month: ${r.cancelCount}
 Annual Schedule Leakage: ${fmt(r.lostRevAnnual)}
 Unfilled Hours/Month: ${fmtDec(r.unusedHours,0)}
 
@@ -1395,7 +1405,7 @@ ${r.sortedByRPH.map((s,i) => `${i+1}. ${s.name||"Service"}: ${fmt(s.revenuePerHo
 Directional diagnostic. Not financial or tax advice.`}
               </div>
               <PrimaryButton onClick={() => {
-                const text = `REVENUE SNAPSHOT — ${data.businessName || "Your Business"}\n${loginData.name ? `Prepared for: ${loginData.name}\n` : ""}\nCURRENT POSITION\nMonthly Revenue: ${fmt(r.rev)}\nEarned Revenue/Hr: ${fmt(r.revenuePerHourWorked)}/hr\nAverage Ticket: ${fmt(r.avgTicket)}\nCapacity Utilization: ${fmtPct(Math.min(r.utilization,100))}\nWeekly Revenue: ${fmt(r.weeklyRev)}${r.target > 0 ? `\nAnnual Target: ${fmt(r.target)}` : ""}${r.revenueGap > 0 ? `\nRevenue Gap: ${fmt(r.revenueGapAnnual)}/year` : ""}\n\nREVENUE LEAKS\nNo-Show Rate: ${fmtPct(r.noShow*100)}\nLate Cancel Rate: ${fmtPct(r.cancel*100)}\nAnnual Schedule Leakage: ${fmt(r.lostRevAnnual)}\nUnfilled Hours/Month: ${fmtDec(r.unusedHours,0)}\n\nCLIENT RETENTION\nRebooking Rate: ${fmtPct(r.rebook*100)}\nClient Lifespan: ${r.lifespan} months\nClient LTV: ${fmt(r.ltv)}\n\nTOP STRUCTURAL GAPS\n${r.rankedGaps.map((g,i) => `${i+1}. ${g.title} [${g.severity.toUpperCase()}] — ${fmt(g.dollarImpact)}/yr\n   ${g.summary}`).join("\n\n")}\n\nSERVICE YIELD\n${r.sortedByRPH.map((s,i) => `${i+1}. ${s.name||"Service"}: ${fmt(s.revenuePerHour)}/hr — ${fmt(s.priceNum)} × ${fmtNum(s.bookingsNum)}/mo`).join("\n")}`;
+                const text = `REVENUE SNAPSHOT — ${data.businessName || "Your Business"}\n${loginData.name ? `Prepared for: ${loginData.name}\n` : ""}\nCURRENT POSITION\nMonthly Revenue: ${fmt(r.rev)}\nEarned Revenue/Hr: ${fmt(r.revenuePerHourWorked)}/hr\nAverage Ticket: ${fmt(r.avgTicket)}\nCapacity Utilization: ${fmtPct(Math.min(r.utilization,100))}\nWeekly Revenue: ${fmt(r.weeklyRev)}${r.target > 0 ? `\nAnnual Target: ${fmt(r.target)}` : ""}${r.revenueGap > 0 ? `\nRevenue Gap: ${fmt(r.revenueGapAnnual)}/year` : ""}\n\nREVENUE LEAKS\nNo-Shows Per Month: ${r.noShowCount}\nLast-Minute Cancels Per Month: ${r.cancelCount}\nAnnual Schedule Leakage: ${fmt(r.lostRevAnnual)}\nUnfilled Hours/Month: ${fmtDec(r.unusedHours,0)}\n\nCLIENT RETENTION\nRebooking Rate: ${fmtPct(r.rebook*100)}\nClient Lifespan: ${r.lifespan} months\nClient LTV: ${fmt(r.ltv)}\n\nTOP STRUCTURAL GAPS\n${r.rankedGaps.map((g,i) => `${i+1}. ${g.title} [${g.severity.toUpperCase()}] — ${fmt(g.dollarImpact)}/yr\n   ${g.summary}`).join("\n\n")}\n\nSERVICE YIELD\n${r.sortedByRPH.map((s,i) => `${i+1}. ${s.name||"Service"}: ${fmt(s.revenuePerHour)}/hr — ${fmt(s.priceNum)} × ${fmtNum(s.bookingsNum)}/mo`).join("\n")}`;
                 navigator.clipboard?.writeText(text);
               }} style={{ marginTop: 16, width: "100%" }}>Copy to Clipboard →</PrimaryButton>
             </Card>
