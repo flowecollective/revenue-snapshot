@@ -110,13 +110,13 @@ export async function POST(req) {
     y -= 30;
 
     // ═══ GENE KEY BOX ═══
-    page.drawRectangle({ x: margin, y: y - 16, width: cw, height: 16, color: rgb(250/255, 246/255, 240/255), borderColor: GOLD, borderWidth: 0.5 });
-    page.drawText("YOUR GENE KEY", { x: margin + 10, y: y - 12, size: 7, font: helveticaBold, color: GOLD_DARK });
-    y -= 30;
+    page.drawRectangle({ x: margin, y: y - 20, width: cw, height: 20, color: rgb(250/255, 246/255, 240/255), borderColor: GOLD, borderWidth: 0.5 });
+    page.drawText("YOUR GENE KEY", { x: margin + 10, y: y - 14, size: 7, font: helveticaBold, color: GOLD_DARK });
+    y -= 38;
 
     const gateText = "Gate " + geneKey.gate + " - " + geneKey.name;
-    page.drawText(gateText, { x: margin + 10, y, size: 14, font: helvetica, color: CHARCOAL });
-    y -= 18;
+    page.drawText(gateText, { x: margin + 10, y, size: 16, font: helvetica, color: CHARCOAL });
+    y -= 22;
 
     const metaText = "Shadow: " + geneKey.shadow + "    Gift: " + geneKey.gift + "    Siddhi: " + geneKey.siddhi;
     page.drawText(metaText, { x: margin + 10, y, size: 8, font: helvetica, color: MUTED });
@@ -136,19 +136,21 @@ export async function POST(req) {
       const text = stripHtml(sec.content);
       if (!text) continue;
       newPageIfNeeded(80);
-      page.drawText(sec.title, { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
-      y -= 14;
+      y -= 4;
+      page.drawText(sec.title, { x: margin + 10, y, size: 9, font: helveticaBold, color: GOLD_DARK });
+      y -= 18;
       y = drawText(page, text, margin + 10, y, helvetica, 9, CHARCOAL, cw - 20);
-      y -= 10;
+      y -= 12;
       newPageIfNeeded(20);
       drawLine(y);
-      y -= 14;
+      y -= 16;
     }
 
     // ═══ STRENGTHS ═══
     newPageIfNeeded(100);
-    page.drawText("YOUR 3 STRENGTHS", { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
-    y -= 14;
+    y -= 4;
+    page.drawText("YOUR 3 STRENGTHS", { x: margin + 10, y, size: 9, font: helveticaBold, color: GOLD_DARK });
+    y -= 18;
     if (strengths) {
       for (const s of strengths) {
         const lines = wrapText("\u2022  " + s, helvetica, 9, cw - 20);
@@ -164,8 +166,9 @@ export async function POST(req) {
 
     // ═══ CHALLENGE ═══
     newPageIfNeeded(80);
-    page.drawText("YOUR HIDDEN CHALLENGE", { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
-    y -= 14;
+    y -= 4;
+    page.drawText("YOUR HIDDEN CHALLENGE", { x: margin + 10, y, size: 9, font: helveticaBold, color: GOLD_DARK });
+    y -= 18;
     // Gold left border
     const challengeText = stripHtml(challenge || "");
     const chLines = wrapText(challengeText, helvetica, 9, cw - 40);
@@ -179,16 +182,18 @@ export async function POST(req) {
 
     // ═══ NEXT STEPS ═══
     newPageIfNeeded(60);
-    page.drawText("WHAT TO DO NEXT", { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
-    y -= 14;
+    y -= 4;
+    page.drawText("WHAT TO DO NEXT", { x: margin + 10, y, size: 9, font: helveticaBold, color: GOLD_DARK });
+    y -= 18;
     y = drawText(page, stripHtml(next || ""), margin + 10, y, helvetica, 9, CHARCOAL, cw - 20);
     y -= 14;
 
     // ═══ SECONDARY ═══
     if (secondary) {
       newPageIfNeeded(40);
-      page.drawText("SECONDARY INFLUENCE", { x: margin + 10, y, size: 7, font: helveticaBold, color: GOLD_DARK });
-      y -= 14;
+      y -= 4;
+      page.drawText("SECONDARY INFLUENCE", { x: margin + 10, y, size: 9, font: helveticaBold, color: GOLD_DARK });
+      y -= 18;
       page.drawText(secondary.name + " - " + secondary.tagline, { x: margin + 10, y, size: 9, font: helvetica, color: CHARCOAL });
       y -= 20;
     }
@@ -203,14 +208,14 @@ export async function POST(req) {
     const ctaSub = "Book a 30-minute Career Direction Call";
     const ctaSW = helvetica.widthOfTextAtSize(ctaSub, 9);
     page.drawText(ctaSub, { x: (pw - ctaSW) / 2, y: y - 34, size: 9, font: helvetica, color: MUTED });
-    const ctaUrl = "flowecollective.com/call";
+    const ctaUrl = "Book at flowecollective.com";
     const ctaUW = helveticaBold.widthOfTextAtSize(ctaUrl, 10);
     page.drawText(ctaUrl, { x: (pw - ctaUW) / 2, y: y - 50, size: 10, font: helveticaBold, color: GOLD_DARK });
 
     // ═══ FOOTER ═══
     const footY = 35;
     page.drawLine({ start: { x: margin, y: footY + 10 }, end: { x: pw - margin, y: footY + 10 }, thickness: 0.5, color: LINE });
-    const footText = "Flowe Collective  \u00B7  flowecollective.com  \u00B7  @flowecollective_";
+    const footText = "Flowe Collective  \u00B7  jordanwangco.com  \u00B7  @flowecollective_";
     const footW = helvetica.widthOfTextAtSize(footText, 7);
     page.drawText(footText, { x: (pw - footW) / 2, y: footY, size: 7, font: helvetica, color: MUTED });
 
