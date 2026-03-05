@@ -1,9 +1,4 @@
 import { NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
-
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
 
 export async function POST(req) {
   try {
@@ -46,13 +41,26 @@ YOUR NEXT MOVE
 
 Use plain dashes not em dashes. Do not use markdown formatting. Use HTML <p> tags for paragraphs and <ul class="gk-list"><li> for lists. Use <span class="gk-hl"> for key phrases you want emphasized. Write in second person. Be warm but direct. About 600 words total.`;
 
-    const message = await client.messages.create({
-      model: "claude-sonnet-4-5-20250929",
-      max_tokens: 1200,
-      messages: [{ role: "user", content: prompt }],
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-5-20250929",
+        max_tokens: 1200,
+        messages: [{ role: "user", content: prompt }],
+      }),
     });
 
-    const text = message.content?.[0]?.text || "";
+    const data = await response.json();
+    const text = data.content?.[0]?.text || "";
+
+    if (!text) {
+      return NextResponse.json({ error: "Empty response from AI" }, { status: 500 });
+    }
 
     const sections = { core: "", shadow: "", gift: "", move: "" };
     let current = "core";
@@ -65,7 +73,7 @@ Use plain dashes not em dashes. Do not use markdown formatting. Use HTML <p> tag
       else sections[current] += line + "\n";
     });
 
-    return NextResponse.json({ sections, raw: text });
+    return NextResponse.json({ sections });
   } catch (err) {
     console.error("Quiz reading error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
