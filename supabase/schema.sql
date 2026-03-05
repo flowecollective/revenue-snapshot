@@ -106,3 +106,26 @@ begin
   );
 end;
 $$ language plpgsql security definer;
+
+-- ═══════════════════════════════════════
+-- QUIZ SESSIONS (archetype quiz data)
+-- Saves quiz state before Stripe redirect
+-- ═══════════════════════════════════════
+create table public.quiz_sessions (
+  id uuid default gen_random_uuid() primary key,
+  email text not null,
+  name text,
+  phone text,
+  archetype text not null,
+  secondary_type text,
+  gene_key jsonb not null, -- {gate, name, shadow, gift, siddhi}
+  birthday jsonb, -- {month, day, year, time}
+  answers jsonb not null, -- quiz answer indices
+  scores jsonb, -- type scores
+  paid boolean default false,
+  stripe_session_id text,
+  created_at timestamptz default now()
+);
+
+create index idx_quiz_email on public.quiz_sessions(email);
+-- No RLS needed - accessed via service role from API routes only
