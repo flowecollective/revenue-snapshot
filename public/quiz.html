@@ -96,6 +96,32 @@ footer{background:var(--charcoal);padding:3rem 2rem;text-align:center;border-top
 .footer-links{display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;flex-wrap:wrap}
 .footer-links a{font-size:.7rem;font-weight:400;color:rgba(250,246,240,.4);text-decoration:none;transition:color .3s}.footer-links a:hover{color:var(--gold)}
 .footer-copy{font-size:.6rem;color:rgba(250,246,240,.25)}
+.pdf-wrap{position:absolute;left:-9999px;top:0;width:700px;background:#fff;color:#1A1A1A;font-family:'Outfit',sans-serif;padding:40px}
+.pdf-wrap .pdf-header{text-align:center;border-bottom:2px solid #C9A96E;padding-bottom:20px;margin-bottom:24px}
+.pdf-wrap .pdf-logo{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;letter-spacing:.15em;color:#1A1A1A}
+.pdf-wrap .pdf-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;margin:16px 0 4px}
+.pdf-wrap .pdf-tag{font-size:14px;color:#6B6460;font-style:italic}
+.pdf-wrap .pdf-prepared{font-size:11px;color:#6B6460;margin-top:12px}
+.pdf-wrap .pdf-section{margin:20px 0;padding:16px;border:1px solid #E0DAD0;background:#FAF6F0}
+.pdf-wrap .pdf-section-title{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#C9A96E;margin-bottom:8px}
+.pdf-wrap .pdf-section p{font-size:13px;line-height:1.7;color:#1A1A1A;margin-bottom:8px}
+.pdf-wrap .pdf-section ul{list-style:none;padding:0;margin:0}
+.pdf-wrap .pdf-section li{padding:4px 0 4px 14px;position:relative;font-size:13px;line-height:1.5}
+.pdf-wrap .pdf-section li::before{content:'';position:absolute;left:0;top:.6em;width:5px;height:5px;border-radius:50%;background:#C9A96E}
+.pdf-wrap .pdf-gk{border:1px solid #C9A96E;padding:16px;margin:20px 0}
+.pdf-wrap .pdf-gk-header{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#C9A96E}
+.pdf-wrap .pdf-gk-gate{font-family:'Cormorant Garamond',serif;font-size:18px;margin:4px 0 8px}
+.pdf-wrap .pdf-gk-meta{font-size:12px;color:#6B6460;margin-bottom:12px}
+.pdf-wrap .pdf-gk-sub{font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:#A8884D;margin:16px 0 6px;border-top:1px solid #E0DAD0;padding-top:12px}
+.pdf-wrap .pdf-challenge{border-left:3px solid #C9A96E;padding-left:12px;font-size:13px;line-height:1.7}
+.pdf-wrap .pdf-cta{text-align:center;margin-top:24px;padding:20px;border:1px solid #C9A96E;background:rgba(201,169,110,.04)}
+.pdf-wrap .pdf-cta-title{font-family:'Cormorant Garamond',serif;font-size:18px;margin-bottom:4px}
+.pdf-wrap .pdf-cta-sub{font-size:12px;color:#6B6460}
+.pdf-wrap .pdf-cta-url{font-size:13px;color:#C9A96E;margin-top:8px;font-weight:500}
+.pdf-wrap .pdf-footer{text-align:center;margin-top:24px;font-size:10px;color:#6B6460;border-top:1px solid #E0DAD0;padding-top:16px}
+.pdf-wrap .gk-hl{font-weight:500;color:#A8884D}
+.btn-download{display:block;width:100%;background:var(--charcoal);color:var(--cream);border:none;padding:1rem;font-family:var(--font-body);font-size:.75rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;text-align:center;margin-top:.5rem}
+.btn-download:hover{background:var(--gold);color:var(--charcoal)}
 @media(max-width:768px){.wrap{padding:2rem 1.5rem 3rem}.grid{grid-template-columns:1fr}.gk-tab{font-size:.5rem;padding:.6rem .3rem}.field-row{grid-template-columns:1fr 1fr 1fr}}
 </style>
 </head>
@@ -106,6 +132,7 @@ footer{background:var(--charcoal);padding:3rem 2rem;text-align:center;border-top
 <div class="card-side"><div class="side-title">Why This Works</div><div class="side-text">Your career archetype comes from your answers. Your Gene Key comes from your birth date. Together they create a reading that's unique to you.</div><ul class="side-list"><li>Your career archetype + strengths</li><li>Birth date Gene Key calculation</li><li>Shadow pattern you're likely repeating</li><li>Gift waiting to emerge</li><li>AI-personalized career insight</li></ul><div class="side-fine">No two readings are the same.</div></div></div>
 </div>
 <footer><div class="footer-logo">FLOWE</div><div class="footer-links"><a href="tel:8329740913">832-974-0913</a><a href="mailto:hello@flowecollective.com">hello@flowecollective.com</a><a href="https://instagram.com/flowecollective_" target="_blank" rel="noopener">@flowecollective_</a></div><div class="footer-copy">&copy; 2026 Flowe Collective. All rights reserved.</div></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 var STRIPE_URL="https://buy.stripe.com/aFa00i2HKdpj0vy6vE9EI05";
 var CALL_URL="https://jordanwangco.com/call.html";
@@ -251,6 +278,7 @@ async function generateAiReading(attempt){
       if(data.sections.shadow.trim())shadowEl.innerHTML=data.sections.shadow;
       if(data.sections.gift.trim())giftEl.innerHTML=data.sections.gift;
       if(data.sections.move.trim())moveEl.innerHTML=data.sections.move;
+      enablePdfDownload();
       return;
     }
     throw new Error(data.error||"No sections returned");
@@ -264,11 +292,46 @@ async function generateAiReading(attempt){
       if(giftEl.querySelector(".gk-ai-loading"))giftEl.innerHTML=failMsg;
       if(moveEl.querySelector(".gk-ai-loading"))moveEl.innerHTML=failMsg;
       sendWebhook({event:"ai_generation_failed",timestamp:new Date().toISOString(),name:state.lead.name,email:state.lead.email,archetype:state.resultType,geneKey:gk.gate+" - "+gk.name});
+      enablePdfDownload();
     }
   }
 }
 
 function buildReportText(){var a=archetypes[state.resultType],gk=state.geneKey;var l=["BEAUTY CAREER ARCHETYPE REPORT","Flowe Collective","Prepared for: "+state.lead.name,"","YOUR ARCHETYPE: "+a.name.toUpperCase(),a.tagline,"","GENE KEY "+gk.gate+": "+gk.name.toUpperCase(),"Shadow: "+gk.shadow,"Gift: "+gk.gift,"Siddhi: "+gk.siddhi,"","YOUR 3 STRENGTHS"];a.strengths.forEach(function(s,i){l.push((i+1)+". "+s)});l.push("","YOUR HIDDEN CHALLENGE",a.challenge,"","WHAT TO DO NEXT",a.next);if(state.secondaryType){l.push("","SECONDARY INFLUENCE: "+archetypes[state.secondaryType].name)}l.push("","---","Book a Career Direction Call: flowecollective.com/call");return l.join("\n")}
+
+function buildPdfContent(){
+  var a=archetypes[state.resultType],gk=state.geneKey,sec=state.secondaryType?archetypes[state.secondaryType]:null;
+  var core=document.getElementById("gk-core"),shadow=document.getElementById("gk-shadow"),gift=document.getElementById("gk-gift"),move=document.getElementById("gk-move");
+  var today=new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+  var html='<div class="pdf-header"><div class="pdf-logo">FLOWE</div><div class="pdf-name">'+a.name+'</div><div class="pdf-tag">'+a.tagline+'</div><div class="pdf-prepared">Prepared for '+esc(state.lead.name)+' - '+today+'</div></div>';
+  html+='<div class="pdf-gk"><div class="pdf-gk-header">Your Gene Key</div><div class="pdf-gk-gate">Gate '+gk.gate+' - '+gk.name+'</div><div class="pdf-gk-meta">Shadow: '+gk.shadow+' &nbsp; Gift: '+gk.gift+' &nbsp; Siddhi: '+gk.siddhi+'</div>';
+  if(core)html+='<div class="pdf-gk-sub">Core Theme</div>'+core.innerHTML;
+  if(shadow)html+='<div class="pdf-gk-sub">The Shadow: '+gk.shadow+'</div>'+shadow.innerHTML;
+  if(gift)html+='<div class="pdf-gk-sub">The Gift: '+gk.gift+'</div>'+gift.innerHTML;
+  if(move)html+='<div class="pdf-gk-sub">Your Next Move</div>'+move.innerHTML;
+  html+='</div>';
+  html+='<div class="pdf-section"><div class="pdf-section-title">Your 3 Strengths</div><ul>'+a.strengths.map(function(s){return'<li>'+s+'</li>'}).join("")+'</ul></div>';
+  html+='<div class="pdf-section"><div class="pdf-section-title">Your Hidden Challenge</div><div class="pdf-challenge">'+a.challenge+'</div></div>';
+  html+='<div class="pdf-section"><div class="pdf-section-title">What to Do Next</div><p>'+a.next+'</p></div>';
+  if(sec)html+='<div class="pdf-section"><div class="pdf-section-title">Secondary Influence</div><p><strong>'+sec.name+'</strong> - '+sec.tagline+'</p></div>';
+  html+='<div class="pdf-cta"><div class="pdf-cta-title">Need clarity on your next move?</div><div class="pdf-cta-sub">Book a 30-minute Career Direction Call</div><div class="pdf-cta-url">flowecollective.com/call</div></div>';
+  html+='<div class="pdf-footer">Flowe Collective - flowecollective.com - @flowecollective_</div>';
+  return html;
+}
+
+function enablePdfDownload(){
+  var el=document.getElementById("pdfContent");
+  var btn=document.getElementById("pdfBtn");
+  if(!el||!btn)return;
+  el.innerHTML=buildPdfContent();
+  btn.disabled=false;
+  btn.textContent="Download Your Reading (PDF)";
+  btn.addEventListener("click",function(){
+    btn.textContent="Generating PDF...";btn.disabled=true;
+    var opt={margin:0,filename:"Flowe-Career-Archetype-"+state.lead.name.replace(/\s+/g,"-")+".pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}};
+    html2pdf().set(opt).from(el).save().then(function(){btn.textContent="Download Your Reading (PDF)";btn.disabled=false});
+  });
+}
 function render(){
   els.toast.style.display="none";els.error.style.display="none";setProgress();
   els.backBtn.disabled=state.step===0;els.nextBtn.disabled=true;els.nextBtn.style.display="";els.nextBtn.textContent="NEXT";els.btnrow.style.display="flex";
@@ -360,6 +423,8 @@ function render(){
     h+='<div class="result-section"><div class="result-section-title">What to Do Next</div><p>'+arch.next+'</p></div>';
     if(sec)h+='<div class="result-section"><div class="result-section-title">Secondary Influence</div><p><strong>'+sec.name+'</strong> - '+sec.tagline+'</p></div>';
     h+='<button class="btn-pay" style="margin-top:1rem" id="copyBtn">Copy My Full Report</button>';
+    h+='<button class="btn-download" id="pdfBtn" disabled>Download PDF (generating...)</button>';
+    h+='<div id="pdfContent" class="pdf-wrap"></div>';
     h+='<div class="upsell"><div class="upsell-title">Need clarity on your next move?</div><div class="upsell-desc">Book a 30-minute Career Direction Call and get personalized guidance.</div>'+
       '<div class="paywall-includes"><div class="inc-item"><span class="inc-check">&check;</span> Personalized career direction</div><div class="inc-item"><span class="inc-check">&check;</span> Income strategy for your archetype</div><div class="inc-item"><span class="inc-check">&check;</span> Clear next steps you can execute immediately</div></div>'+
       '<div class="price-big">$99</div><div class="price-sub">30-minute strategy session</div>'+
