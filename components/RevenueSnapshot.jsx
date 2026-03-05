@@ -27,11 +27,11 @@ const C = {
 };
 const font = { display: "'Cormorant Garamond', Georgia, serif", body: "'Outfit', sans-serif" };
 
-// ─── Storage Helper (in-memory for artifact sandbox) ───
-const _mem = {};
+// ─── Storage Helper (localStorage with fallback) ───
 const store = {
-  get: (k) => { try { return k in _mem ? _mem[k] : null; } catch { return null; } },
-  set: (k, v) => { try { _mem[k] = v; } catch {} },
+  get: (k) => { try { const v = localStorage.getItem("rs_" + k); return v ? JSON.parse(v) : null; } catch { return null; } },
+  set: (k, v) => { try { localStorage.setItem("rs_" + k, JSON.stringify(v)); } catch {} },
+  remove: (k) => { try { localStorage.removeItem("rs_" + k); } catch {} },
 };
 
 // ─── Stripe Payment Links (REPLACE WITH YOUR URLS) ───
@@ -43,16 +43,54 @@ const STRIPE = {
 };
 
 // ─── Entitlement Helpers ───
+// ⚠️ TEST MODE: All features unlocked. Remove these overrides before going live.
 const KEYS = {
   blueprint: (aid) => `unlock_blueprint_${aid}`,
   ai: (aid) => `unlock_ai_${aid}`,
   platform: "unlock_platform_plan",
 };
-const getPlatform = () => store.get(KEYS.platform) || "none";
-const isPlatform = () => getPlatform() !== "none";
-const hasBlueprint = (aid) => isPlatform() || !!store.get(KEYS.blueprint(aid));
-const hasAI = (aid) => isPlatform() || !!store.get(KEYS.ai(aid));
-const maxAiGens = (aid) => isPlatform() ? 9999 : hasAI(aid) ? 3 : 0;
+const getPlatform = () => "monthly";
+const isPlatform = () => true;
+const hasBlueprint = (aid) => true;
+const hasAI = (aid) => true;
+const maxAiGens = (aid) => 9999;
+
+// Sync entitlements from Supabase → localStorage
+async function syncEntitlements(auditId, onUpdate) {
+  if (!supabase) return;
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) return;
+
+    const res = await fetch(`/api/entitlements?audit_id=${auditId}`, {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+    if (!res.ok) return;
+    const ent = await res.json();
+
+    let changed = false;
+    if (ent.liftPlan && !hasBlueprint(auditId)) {
+      store.set(KEYS.blueprint(auditId), true);
+      changed = true;
+    }
+    if (ent.aiEngine && !hasAI(auditId)) {
+      store.set(KEYS.ai(auditId), true);
+      changed = true;
+    }
+    if (ent.unlimited && !isPlatform()) {
+      store.set(KEYS.platform, ent.unlimited === true ? "monthly" : ent.unlimited);
+      changed = true;
+    }
+    if (changed && onUpdate) onUpdate();
+  } catch (err) {
+    console.error("Entitlement sync failed:", err);
+  }
+}
+
+// Mark that a purchase was initiated (so we know to poll on return)
+function markPurchasePending() {
+  store.set("purchase_pending", Date.now());
+}
 
 // ─── Offer Catalog ───
 const OFFERS = {
@@ -315,7 +353,8 @@ function ServiceInput({ service, index, onChange, onRemove, canRemove }) {
 
 // ─── Pricing Modal ───
 function PricingModal({ onClose, email, auditId }) {
-  const stripeUrl = (key) => `${STRIPE[key]}?prefilled_email=${encodeURIComponent(email)}`;
+  const stripeUrl = (key) => `${STRIPE[key]}?prefilled_email=${encodeURIComponent(email)}&client_reference_id=${encodeURIComponent(auditId)}`;
+  const handleStripeClick = () => markPurchasePending();
   const alreadyBlueprint = hasBlueprint(auditId);
   const alreadyAI = hasAI(auditId);
   return (
@@ -353,7 +392,7 @@ function PricingModal({ onClose, email, auditId }) {
             {alreadyBlueprint ? (
               <PrimaryButton disabled style={{ width: "100%", marginTop: 14, background: C.line }}>Lift Plan Unlocked ✓</PrimaryButton>
             ) : (
-              <a href={stripeUrl(OFFERS.blueprint.stripeKey)} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block", marginTop: 14 }}>
+              <a href={stripeUrl(OFFERS.blueprint.stripeKey)} target="_blank" rel="noopener noreferrer" onClick={handleStripeClick} style={{ textDecoration: "none", display: "block", marginTop: 14 }}>
                 <PrimaryButton style={{ width: "100%" }}>{OFFERS.blueprint.CTA}</PrimaryButton>
               </a>
             )}
@@ -382,7 +421,7 @@ function PricingModal({ onClose, email, auditId }) {
             {alreadyAI ? (
               <SecondaryButton disabled style={{ width: "100%", marginTop: 14 }}>AI Added ✓</SecondaryButton>
             ) : (
-              <a href={stripeUrl(OFFERS.aiAddOn.stripeKey)} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block", marginTop: 14 }}>
+              <a href={stripeUrl(OFFERS.aiAddOn.stripeKey)} target="_blank" rel="noopener noreferrer" onClick={handleStripeClick} style={{ textDecoration: "none", display: "block", marginTop: 14 }}>
                 <SecondaryButton style={{ width: "100%" }}>{OFFERS.aiAddOn.CTA}</SecondaryButton>
               </a>
             )}
@@ -400,10 +439,10 @@ function PricingModal({ onClose, email, auditId }) {
                 <div style={{ fontSize: 12, color: C.ash, fontFamily: font.body, marginTop: 6, lineHeight: 1.6 }}>{OFFERS.platform.hype}</div>
               </div>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <a href={stripeUrl(OFFERS.platform.monthly.stripeKey)} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+                <a href={stripeUrl(OFFERS.platform.monthly.stripeKey)} target="_blank" rel="noopener noreferrer" onClick={handleStripeClick} style={{ textDecoration: "none" }}>
                   <PrimaryButton style={{ padding: "12px 16px" }}>{OFFERS.platform.monthly.priceLabel}</PrimaryButton>
                 </a>
-                <a href={stripeUrl(OFFERS.platform.annual.stripeKey)} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+                <a href={stripeUrl(OFFERS.platform.annual.stripeKey)} target="_blank" rel="noopener noreferrer" onClick={handleStripeClick} style={{ textDecoration: "none" }}>
                   <SecondaryButton style={{ padding: "12px 16px" }}>{OFFERS.platform.annual.priceLabel} · {OFFERS.platform.annual.save}</SecondaryButton>
                 </a>
               </div>
@@ -661,6 +700,32 @@ export default function RevenueSnapshot() {
     });
   }, []);
 
+  // Entitlement sync: poll when user returns from Stripe tab
+  const [entitlementVersion, forceUpdate] = useState(0);
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible" && auditId) {
+        const pending = store.get("purchase_pending");
+        if (pending && Date.now() - pending < 600000) { // within 10 min
+          store.remove("purchase_pending");
+          // Poll a few times with delay (webhook may take a moment)
+          const poll = (attempt) => {
+            if (attempt > 5) return;
+            setTimeout(() => {
+              syncEntitlements(auditId, () => forceUpdate(n => n + 1));
+              if (!hasBlueprint(auditId) && !hasAI(auditId)) poll(attempt + 1);
+            }, attempt * 2000 + 1000); // 1s, 3s, 5s, 7s, 9s
+          };
+          poll(0);
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    // Also sync on mount if we have an auditId (returning user)
+    if (auditId) syncEntitlements(auditId, () => forceUpdate(n => n + 1));
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [auditId]);
+
   // Data
   const [data, setData] = useState({
     businessName: "", industry: "", monthlyRevenue: "", targetAnnualIncome: "",
@@ -705,7 +770,7 @@ export default function RevenueSnapshot() {
     const blueprint = hasBlueprint(auditId);
     const ai = hasAI(auditId);
     return { platform, blueprint, ai };
-  }, [auditId]);
+  }, [auditId, entitlementVersion]);
   const hasBP = access.blueprint;
   const hasAi = access.ai;
   const isPlatformTier = access.platform;
@@ -1159,7 +1224,7 @@ export default function RevenueSnapshot() {
                   ))}
                 </div>
                 <div>
-                  <a href={STRIPE.blueprint} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+                  <a href={`${STRIPE.blueprint}?prefilled_email=${encodeURIComponent(loginData.email)}&client_reference_id=${encodeURIComponent(auditId)}`} target="_blank" rel="noopener noreferrer" onClick={() => markPurchasePending()} style={{ textDecoration: "none" }}>
                     <button style={{ background: C.gold, color: C.ink, border: "none", borderRadius: 2, padding: "16px 48px", fontSize: 12, fontWeight: 500, fontFamily: font.body, letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", transition: "all 0.3s", display: "inline-block" }} onMouseOver={e => { e.currentTarget.style.background="#E8D5B0"; e.currentTarget.style.boxShadow="0 10px 40px rgba(201,169,110,0.25)"; }} onMouseOut={e => { e.currentTarget.style.background="#C9A96E"; e.currentTarget.style.boxShadow="none"; }}>Get Complete Plan — $147</button>
                   </a>
                 </div>
