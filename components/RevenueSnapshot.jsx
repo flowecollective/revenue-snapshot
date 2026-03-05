@@ -557,14 +557,12 @@ ${r.rankedGaps.map((g, i) => `${i+1}. ${g.title} [${g.severity.toUpperCase()}] â
 
 Generate the 45-day execution plan. Prioritize the #1 ranked gap. Be specific to this business's numbers.`;
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/ai-proxy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
           system: systemPrompt,
-          messages: [{ role: "user", content: userPrompt }],
+          prompt: userPrompt,
         }),
       });
 
