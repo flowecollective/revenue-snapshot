@@ -201,16 +201,19 @@ export async function POST(req) {
     // ═══ CTA BOX ═══
     newPageIfNeeded(90);
     y -= 8;
-    page.drawRectangle({ x: margin, y: y - 60, width: cw, height: 60, borderColor: GOLD, borderWidth: 0.5 });
+    page.drawRectangle({ x: margin, y: y - 74, width: cw, height: 74, borderColor: GOLD, borderWidth: 0.5 });
     const ctaTitle = "Need clarity on your next move?";
     const ctaTW = helvetica.widthOfTextAtSize(ctaTitle, 13);
     page.drawText(ctaTitle, { x: (pw - ctaTW) / 2, y: y - 18, size: 13, font: helvetica, color: CHARCOAL });
     const ctaSub = "Book a 30-minute Career Direction Call";
     const ctaSW = helvetica.widthOfTextAtSize(ctaSub, 9);
     page.drawText(ctaSub, { x: (pw - ctaSW) / 2, y: y - 34, size: 9, font: helvetica, color: MUTED });
-    const ctaUrl = "Book at flowecollective.com";
-    const ctaUW = helveticaBold.widthOfTextAtSize(ctaUrl, 10);
-    page.drawText(ctaUrl, { x: (pw - ctaUW) / 2, y: y - 50, size: 10, font: helveticaBold, color: GOLD_DARK });
+    const ctaUrl = "Schedule Your Call";
+    const ctaUW = helveticaBold.widthOfTextAtSize(ctaUrl, 11);
+    page.drawText(ctaUrl, { x: (pw - ctaUW) / 2, y: y - 50, size: 11, font: helveticaBold, color: GOLD_DARK });
+    const ctaLink = "jordanwangco.com/call";
+    const ctaLW = helvetica.widthOfTextAtSize(ctaLink, 7);
+    page.drawText(ctaLink, { x: (pw - ctaLW) / 2, y: y - 64, size: 7, font: helvetica, color: MUTED });
 
     // ═══ FOOTER ═══
     const footY = 35;
