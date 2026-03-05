@@ -369,7 +369,7 @@ function render(){
     var vL=function(){state.lead.name=nE.value.trim();state.lead.email=eE.value.trim();state.lead.phone=pE.value.trim();pB.disabled=!(state.lead.name.length>=2&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.lead.email))};
     nE.addEventListener("input",vL);eE.addEventListener("input",vL);pE.addEventListener("input",vL);vL();
     // TEST MODE toggle - set to false to enable Stripe
-    var TEST_MODE = true;
+    var TEST_MODE = false;
     pB.addEventListener("click",async function(){
       if(pB.disabled)return;
       pB.textContent="SAVING...";pB.disabled=true;

@@ -739,7 +739,7 @@ export default function RevenueSnapshot() {
     const rev = parseFloat(data.monthlyRevenue)||0, target = parseFloat(data.targetAnnualIncome)||0;
     const daysWk = parseFloat(data.workingDaysPerWeek)||5, hrsDay = parseFloat(data.hoursPerDay)||8, wksYr = parseFloat(data.weeksPerYear)||50;
     const noShowCount = parseFloat(data.noShowRate)||0, cancelCount = parseFloat(data.cancellationRate)||0;
-    const lifespan = parseFloat(data.avgClientLifespanMonths)||12, visitsPerYear = parseFloat(data.avgVisitsPerYear)||12;
+    const lifespan = 24, visitsPerYear = parseFloat(data.avgVisitsPerYear)||12;
     const visitsPerMo = visitsPerYear/12, newClients = parseFloat(data.newClientsPerMonth)||0, rebook = (parseFloat(data.rebookingRate)||0)/100;
 
     const monthlyHrs = daysWk*hrsDay*(wksYr/12), weeklyHrs = daysWk*hrsDay, annualHrs = daysWk*hrsDay*wksYr;
@@ -952,10 +952,9 @@ export default function RevenueSnapshot() {
       case 5: return (
         <div style={{ maxWidth: 420, margin: "0 auto" }}>
           <SectionLabel text="Step 04 — Retention" />
-          <SectionHeading text="Client Lifetime Architecture" sub="How long clients stay and how often they return." />
-          <NoteBox>If you use a booking system (Square, Vagaro, Boulevard, etc.), pull reports for these averages. Otherwise, estimates work.</NoteBox>
-          <InputField label="Average Client Relationship Length" hint="From first appointment to last — how many months before most clients stop coming back?" value={data.avgClientLifespanMonths} onChange={v => update("avgClientLifespanMonths", v)} suffix="months" placeholder="e.g. 12" />
-          <InputField label="Average Visits Per Year" hint="Monthly ≈ 12. Every 6 weeks ≈ 8. Quarterly ≈ 4." value={data.avgVisitsPerYear} onChange={v => update("avgVisitsPerYear", v)} suffix="visits/year" placeholder="e.g. 8" />
+          <SectionHeading text="Client Retention" sub="How often clients return and how your book is growing." />
+          <NoteBox>If you use a booking system (Square, Vagaro, Boulevard, etc.), pull reports for these. Otherwise, estimates work.</NoteBox>
+          <InputField label="Average Visits Per Year" hint="Monthly = 12. Every 6 weeks = 8. Quarterly = 4." value={data.avgVisitsPerYear} onChange={v => update("avgVisitsPerYear", v)} suffix="visits/year" placeholder="e.g. 8" />
           <InputField label="New Clients Per Month" value={data.newClientsPerMonth} onChange={v => update("newClientsPerMonth", v)} suffix="clients" placeholder="e.g. 6" />
           <InputField label="Rebooking Rate" hint="Of every 10 clients, how many book their next visit before leaving? 7 out of 10 = 70%." value={data.rebookingRate} onChange={v => update("rebookingRate", v)} suffix="%" placeholder="e.g. 60" />
           <NavButtons onBack={() => goTo(4)} onNext={() => { save({ step: 6 }); goTo(6); }} canNext nextLabel="View Revenue Snapshot →" />
@@ -1275,7 +1274,8 @@ export default function RevenueSnapshot() {
             </div>
             <Divider />
             <SectionLabel text="Client Lifetime Value" />
-            <MetricCard label="Average Client LTV" value={fmt(r.ltv)} large gold sub={`${fmt(r.avgTicket)} × ${fmtDec(r.visitsPerMo,1)}/mo × ${r.lifespan}mo`} />
+            <MetricCard label="Average Client LTV" value={fmt(r.ltv)} large gold sub={`${fmt(r.avgTicket)} × ${fmtDec(r.visitsPerMo,1)} visits/mo × 2 years`} />
+            <div style={{ fontSize: 11, color: C.ash, fontFamily: font.body, marginTop: 6, fontWeight: 300 }}>Based on a 2-year client relationship. Your best clients are worth significantly more.</div>
           </div>
         ) : <LockedSection title="45-Day Lift Plan" lockType="blueprint" onUnlock={() => setShowPricing(true)} email={loginData.email} />
       )}
