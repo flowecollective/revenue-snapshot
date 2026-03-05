@@ -56,9 +56,17 @@ Use plain dashes not em dashes. Do not use markdown formatting. Use HTML <p> tag
     });
 
     const data = await response.json();
+    
+    // Log the full response for debugging
+    if (!response.ok) {
+      console.error("Anthropic API error:", response.status, JSON.stringify(data));
+      return NextResponse.json({ error: "AI API error: " + (data.error?.message || response.status) }, { status: 500 });
+    }
+
     const text = data.content?.[0]?.text || "";
 
     if (!text) {
+      console.error("Empty AI response. Full data:", JSON.stringify(data));
       return NextResponse.json({ error: "Empty response from AI" }, { status: 500 });
     }
 
