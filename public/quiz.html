@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Beauty Career Archetype Quiz - Flowe Collective</title>
 <meta name="description" content="Discover your Beauty Career Archetype in 60 seconds.">
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','694427154919135');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=694427154919135&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
@@ -373,10 +385,12 @@ function render(){
     pB.addEventListener("click",async function(){
       if(pB.disabled)return;
       pB.textContent="SAVING...";pB.disabled=true;
+      fbq('track','Lead',{content_name:state.resultType,currency:'USD',value:27.99});
       saveToStorage();
       // Save to Supabase as backup
       try{await fetch("/api/quiz-save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:state.lead.email,name:state.lead.name,phone:state.lead.phone,archetype:state.resultType,secondaryType:state.secondaryType,geneKey:state.geneKey,birthday:state.birthday,answers:state.answers,scores:state.typeScores})})}catch(e){console.error("Save failed:",e)}
       if(TEST_MODE){state.step=questions.length+2;render();return}
+      fbq('track','InitiateCheckout',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
       els.toast.textContent="Redirecting to secure checkout...";els.toast.style.display="block";
       setTimeout(function(){window.location.href=STRIPE_URL},600);
     });
@@ -431,6 +445,7 @@ function checkStripeReturn(){
       state.step=questions.length+2;
       localStorage.removeItem("flowe_quiz");
       window.history.replaceState({},"",window.location.pathname);
+      fbq('track','Purchase',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
       return true;
     }
   }catch(e){}
