@@ -25,13 +25,11 @@ src="https://www.facebook.com/tr?id=694427154919135&ev=PageView&noscript=1"
 <!-- TikTok Pixel Code Start -->
 <script>
 !function (w, d, t) {
-  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
 var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
 ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-
-
-  ttq.load('D6LKIDJC77U8SKV72PIG');
-  ttq.page();
+  ttq.load('D6LKIDJC77U8SKV72PIG');
+  ttq.page();
 }(window, document, 'ttq');
 </script>
 <!-- TikTok Pixel Code End -->
@@ -137,15 +135,14 @@ footer{background:var(--charcoal);padding:3rem 2rem;text-align:center;border-top
 <div class="grid"><div class="card" id="quizCard"><div class="progress"><div class="bar" id="bar"></div></div><div class="step-label" id="stepLabel">Step 1 of 6</div><div id="screen"></div><div class="btnrow" id="btnrow"><button class="btn btn-secondary" id="backBtn" disabled>Back</button><button class="btn btn-primary" id="nextBtn" disabled>Next</button></div><div class="toast" id="toast"></div><div class="error" id="error">Something went wrong.</div></div>
 <div class="card-side"><div class="side-title">Why This Works</div><div class="side-text">Your career archetype comes from your answers. Your Gene Key comes from your birth date. Together they create a reading that's unique to you.</div><ul class="side-list"><li>Your career archetype + strengths</li><li>Birth date Gene Key calculation</li><li>Shadow pattern you're likely repeating</li><li>Gift waiting to emerge</li><li>AI-personalized career insight</li></ul><div class="side-fine">No two readings are the same.</div></div></div>
 </div>
-<footer><div class="footer-logo">FLOWE</div><div class="footer-links"><a href="tel:8329740913">832-974-0913</a><a href="/cdn-cgi/l/email-protection#bbd3ded7d7d4fbddd7d4ccded8d4d7d7ded8cfd2cdde95d8d4d6"><span class="__cf_email__" data-cfemail="2d45484141426d4b41425a484e424141484e59445b48034e4240">[email&#160;protected]</span></a><a href="https://instagram.com/flowecollective_" target="_blank" rel="noopener">@flowecollective_</a></div><div class="footer-copy">&copy; 2026 Flowe Collective. All rights reserved.</div></footer>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<footer><div class="footer-logo">FLOWE</div><div class="footer-links"><a href="tel:8329740913">832-974-0913</a><a href="mailto:hello@flowecollective.com">hello@flowecollective.com</a><a href="https://instagram.com/flowecollective_" target="_blank" rel="noopener">@flowecollective_</a></div><div class="footer-copy">&copy; 2026 Flowe Collective. All rights reserved.</div></footer>
+<script>
 var STRIPE_URL="https://buy.stripe.com/aFa00i2HKdpj0vy6vE9EI05";
 var CALL_URL="https://jordanwangco.com/call";
 var WEBHOOK_URL="";
 var FORMSPREE_READING_URL="https://formspree.io/f/mpqyjara";
-var TOTAL_STEPS=6; // 3 questions + birthday + lead/paywall + results
-
-// ═══ GENE KEY WHEEL (gate, startDeg, name, shadow, gift, siddhi) ═══
+var TOTAL_STEPS=6;
+// ═══ GENE KEY WHEEL ═══
 var GKW=[
 [25,358.25,"Innocence","Constriction","Acceptance","Universal Love"],
 [17,3.875,"Opinions","Opinion","Far-sightedness","Omniscience"],
@@ -212,10 +209,8 @@ var GKW=[
 [22,347.0,"Grace","Dishonour","Graciousness","Grace"],
 [36,352.625,"Humanity","Turbulence","Humanity","Compassion"]
 ];
-
 function sunLong(m,d){var dm=[31,28,31,30,31,30,31,31,30,31,30,31],dy=0;for(var i=0;i<m-1;i++)dy+=dm[i];dy+=d;var df=dy-79;if(df<0)df+=365;return(df*0.9863)%360}
 function getGK(lng){for(var i=0;i<GKW.length;i++){var s=GKW[i][1],e=i<GKW.length-1?GKW[i+1][1]:GKW[0][1]+360;if(lng>=s&&lng<e)return{gate:GKW[i][0],name:GKW[i][2],shadow:GKW[i][3],gift:GKW[i][4],siddhi:GKW[i][5]}}return{gate:GKW[GKW.length-1][0],name:GKW[GKW.length-1][2],shadow:GKW[GKW.length-1][3],gift:GKW[GKW.length-1][4],siddhi:GKW[GKW.length-1][5]}}
-
 // ═══ ARCHETYPES ═══
 var archetypes={
   ARTIST:{name:"The Master Artist",tagline:"Craft-led. Detail-driven. Client trust magnet.",strengths:["You win through mastery: technique, consistency, and elevated experience.","You build loyalty fast because clients feel safe in your hands.","Your premium path is specialization and signature services."],challenge:"Your hidden risk is burnout - your talent becomes the entire workload.",next:"Build a signature offer + raise prices strategically + protect your energy with systems."},
@@ -223,7 +218,6 @@ var archetypes={
   MENTOR:{name:"The Mentor Stylist",tagline:"Guide. Teacher. Skill + wisdom transfer.",strengths:["You're designed to develop talent: coaching, feedback, and confidence-building.","You create safety - people grow faster around you.","Your income path expands through mentorship, education, and paid guidance."],challenge:"Your hidden risk is undervaluing your knowledge (and giving it away for free).",next:"Package your wisdom (sessions, workshops, residency curriculum) and charge for results."},
   INFLUENCER:{name:"The Industry Influencer",tagline:"Story-led. Visibility-driven. Brand builder.",strengths:["You're meant to be seen - your work travels when you share it.","You create momentum through content, collaborations, and community.","Your income expands through brand partnerships, authority offers, and audience-led demand."],challenge:"Your hidden risk is inconsistency - visibility requires rhythm, not perfection.",next:"Choose a content lane + show up weekly + build an offer that converts attention into income."}
 };
-
 var questions=[
   {key:"q1",title:"What excites you most about being in the beauty industry?",hint:"Pick the option that feels most true right now.",options:[{label:"Perfecting my craft and creating beautiful work",type:"ARTIST"},{label:"Building something bigger than just my chair",type:"OWNER"},{label:"Helping other stylists grow and gain confidence",type:"MENTOR"},{label:"Creating influence, visibility, and a recognizable brand",type:"INFLUENCER"}]},
   {key:"q2",title:"When you imagine your future, you see yourself...",hint:"Think 2-3 years from now.",options:[{label:"Known for exceptional work and premium clients",type:"ARTIST"},{label:"Leading a team or owning a space",type:"OWNER"},{label:"Teaching, mentoring, or educating stylists",type:"MENTOR"},{label:"Building a personal brand beyond the salon floor",type:"INFLUENCER"}]},
@@ -231,7 +225,6 @@ var questions=[
 ];
 var state={step:0,answers:{},typeScores:{ARTIST:0,OWNER:0,MENTOR:0,INFLUENCER:0},lead:{name:"",email:"",phone:""},birthday:{month:"",day:"",year:"",time:""},resultType:null,secondaryType:null,geneKey:null,aiSections:null};
 var els={screen:document.getElementById("screen"),bar:document.getElementById("bar"),stepLabel:document.getElementById("stepLabel"),backBtn:document.getElementById("backBtn"),nextBtn:document.getElementById("nextBtn"),btnrow:document.getElementById("btnrow"),toast:document.getElementById("toast"),error:document.getElementById("error")};
-
 function setProgress(){els.bar.style.width=Math.round((state.step/(TOTAL_STEPS-1))*100)+"%";els.stepLabel.textContent="Step "+Math.min(state.step+1,TOTAL_STEPS)+" of "+TOTAL_STEPS}
 function computeResult(){state.typeScores={ARTIST:0,OWNER:0,MENTOR:0,INFLUENCER:0};questions.forEach(function(q){var a=state.answers[q.key];if(a!=null)state.typeScores[q.options[a].type]+=(q.weight||1)});var s=state.typeScores;var sorted=Object.keys(s).sort(function(a,b){return s[b]-s[a]});state.resultType=sorted[0];state.secondaryType=sorted[1]&&s[sorted[1]]>0?sorted[1]:null}
 function computeGK(){var m=parseInt(state.birthday.month),d=parseInt(state.birthday.day);if(m&&d){state.geneKey=getGK(sunLong(m,d))}}
@@ -239,13 +232,11 @@ function esc(str){var d=document.createElement("div");d.textContent=str||"";retu
 function saveToStorage(){try{localStorage.setItem("flowe_quiz",JSON.stringify({ts:new Date().toISOString(),lead:state.lead,birthday:state.birthday,resultType:state.resultType,secondaryType:state.secondaryType,geneKey:state.geneKey,answers:state.answers,scores:state.typeScores}))}catch(e){}}
 async function sendWebhook(data){if(!WEBHOOK_URL)return;try{await fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})}catch(e){}}
 function switchGkTab(id){document.querySelectorAll(".gk-tab").forEach(function(t){t.classList.toggle("active",t.dataset.tab===id)});document.querySelectorAll(".gk-panel").forEach(function(p){p.classList.toggle("active",p.id===id)})}
-
 function getGkFallback(gk){
   return'<p>Your shadow pattern is <span class="gk-hl">'+gk.shadow+'</span>. In the beauty industry, this often shows up as the unconscious pattern that keeps you stuck - the thing you do on autopilot when under pressure or playing small.</p>'+
   '<p>Your gift is <span class="gk-hl">'+gk.gift+'</span>. This is what emerges when you recognize the shadow and stop letting it run the show. It\'s already in you - it just needs space to come forward.</p>'+
   '<p>At its highest expression, this Gene Key reaches <span class="gk-hl">'+gk.siddhi+'</span> - the fullest potential of this energy in your life and career.</p>';
 }
-
 async function generateAiReading(attempt){
   attempt=attempt||1;
   var maxAttempts=3;
@@ -254,11 +245,8 @@ async function generateAiReading(attempt){
   var giftEl=document.getElementById("gk-gift");
   var moveEl=document.getElementById("gk-move");
   if(!coreEl)return;
-
   var arch=archetypes[state.resultType],gk=state.geneKey;
   var answerLabels=questions.map(function(q){var a=state.answers[q.key];return a!=null?q.options[a].label:"(skipped)"});
-
-  // Show fallback immediately so they have something to read
   if(attempt===1){
     var fb=getGkFallback(gk);
     coreEl.innerHTML=fb;
@@ -266,7 +254,6 @@ async function generateAiReading(attempt){
     giftEl.innerHTML='<div class="gk-ai-loading">Loading detailed gift interpretation...</div>';
     moveEl.innerHTML='<div class="gk-ai-loading">Loading your personalized next move...</div>';
   }
-
   try{
     var res=await fetch("/api/quiz-reading",{
       method:"POST",
@@ -304,29 +291,37 @@ async function generateAiReading(attempt){
     }
   }
 }
-
-function buildReportText(){var a=archetypes[state.resultType],gk=state.geneKey;var l=["BEAUTY CAREER ARCHETYPE REPORT","Flowe Collective","Prepared for: "+state.lead.name,"","YOUR ARCHETYPE: "+a.name.toUpperCase(),a.tagline,"","GENE KEY "+gk.gate+": "+gk.name.toUpperCase(),"Shadow: "+gk.shadow,"Gift: "+gk.gift,"Siddhi: "+gk.siddhi,"","YOUR 3 STRENGTHS"];a.strengths.forEach(function(s,i){l.push((i+1)+". "+s)});l.push("","YOUR HIDDEN CHALLENGE",a.challenge,"","WHAT TO DO NEXT",a.next);if(state.secondaryType){l.push("","SECONDARY INFLUENCE: "+archetypes[state.secondaryType].name)}if(state.aiSections){l.push("","--- AI-GENERATED GENE KEY READING ---","","CORE THEME",state.aiSections.core.replace(/<[^>]+>/g,"").trim(),"","THE SHADOW",state.aiSections.shadow.replace(/<[^>]+>/g,"").trim(),"","THE GIFT",state.aiSections.gift.replace(/<[^>]+>/g,"").trim(),"","YOUR MOVE",state.aiSections.move.replace(/<[^>]+>/g,"").trim())}l.push("","---","Book a Career Direction Call: flowecollective.com/call");return l.join("\n")}
-
+function buildReportText(){
+  var a=archetypes[state.resultType],gk=state.geneKey;
+  var l=["BEAUTY CAREER ARCHETYPE REPORT","Flowe Collective","Prepared for: "+state.lead.name,"","YOUR ARCHETYPE: "+a.name.toUpperCase(),a.tagline,"","GENE KEY "+gk.gate+": "+gk.name.toUpperCase(),"Shadow: "+gk.shadow,"Gift: "+gk.gift,"Siddhi: "+gk.siddhi,"","YOUR 3 STRENGTHS"];
+  a.strengths.forEach(function(s,i){l.push((i+1)+". "+s)});
+  l.push("","YOUR HIDDEN CHALLENGE",a.challenge,"","WHAT TO DO NEXT",a.next);
+  if(state.secondaryType){l.push("","SECONDARY INFLUENCE: "+archetypes[state.secondaryType].name)}
+  if(state.aiSections){
+    l.push("","--- AI-GENERATED GENE KEY READING ---","","CORE THEME",state.aiSections.core.replace(/<[^>]+>/g,"").trim(),"","THE SHADOW",state.aiSections.shadow.replace(/<[^>]+>/g,"").trim(),"","THE GIFT",state.aiSections.gift.replace(/<[^>]+>/g,"").trim(),"","YOUR MOVE",state.aiSections.move.replace(/<[^>]+>/g,"").trim());
+  }
+  l.push("","---","Book a Career Direction Call: flowecollective.com/call");
+  return l.join("\n");
+}
 function sendReadingEmail(){
-  if(typeof FORMSPREE_READING_URL==="undefined"||!FORMSPREE_READING_URL)return;
-  var report=buildReportText();
+  if(!FORMSPREE_READING_URL)return;
+  var gk=state.geneKey;
   fetch(FORMSPREE_READING_URL,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({
-      _subject:"New Quiz Reading — "+state.lead.name+" ("+state.resultType+")",
+      _subject:"New Quiz Reading - "+state.lead.name+" ("+state.resultType+")",
       name:state.lead.name,
       email:state.lead.email,
       phone:state.lead.phone||"",
       archetype:state.resultType,
-      gene_key:"Gate "+state.geneKey.gate+" — "+state.geneKey.name,
-      shadow:state.geneKey.shadow,
-      gift:state.geneKey.gift,
-      full_reading:report
+      gene_key:"Gate "+gk.gate+" - "+gk.name,
+      shadow:gk.shadow,
+      gift:gk.gift,
+      full_reading:buildReportText()
     })
   }).catch(function(){});
 }
-
 function enablePdfDownload(){
   var btn=document.getElementById("pdfBtn");
   if(!btn)return;
@@ -370,19 +365,16 @@ function enablePdfDownload(){
 function render(){
   els.toast.style.display="none";els.error.style.display="none";setProgress();
   els.backBtn.disabled=state.step===0;els.nextBtn.disabled=true;els.nextBtn.style.display="";els.nextBtn.textContent="NEXT";els.btnrow.style.display="flex";
-
   // Email recovery step
   if(state.step===-1){renderRecovery();return}
-
-  // ── Questions (0-2) ──
+  // Questions (0-2)
   if(state.step<questions.length){
     var q=questions[state.step],sel=state.answers[q.key];
     els.screen.innerHTML='<div class="qtitle">'+q.title+'</div><div class="qhint">'+q.hint+'</div><div>'+q.options.map(function(o,i){return'<button class="opt" data-idx="'+i+'" aria-pressed="'+(sel===i)+'">'+o.label+'</button>'}).join("")+'</div>';
     els.screen.querySelectorAll(".opt").forEach(function(btn){btn.addEventListener("click",function(){state.answers[q.key]=Number(btn.dataset.idx);state.typeScores={ARTIST:0,OWNER:0,MENTOR:0,INFLUENCER:0};questions.forEach(function(qq){var a=state.answers[qq.key];if(a!=null)state.typeScores[qq.options[a].type]+=(qq.weight||1)});render()})});
     els.nextBtn.disabled=(sel==null);return;
   }
-
-  // ── Birthday (step 3) ──
+  // Birthday (step 3)
   if(state.step===questions.length){
     var months=["January","February","March","April","May","June","July","August","September","October","November","December"];
     els.screen.innerHTML='<div class="qtitle">When were you born?</div><div class="qhint">Your birth date determines your Gene Key - the energetic pattern encoded in your DNA. Time of birth is optional but deepens your reading.</div>'+
@@ -395,8 +387,7 @@ function render(){
     mEl.addEventListener("change",vBd);dEl.addEventListener("change",vBd);yEl.addEventListener("change",vBd);tEl.addEventListener("change",vBd);vBd();
     return;
   }
-
-  // ── Lead + Paywall (step 4) ──
+  // Lead + Paywall (step 4)
   if(state.step===questions.length+1){
     computeResult();computeGK();
     var arch=archetypes[state.resultType],gk=state.geneKey;
@@ -421,29 +412,24 @@ function render(){
     var nE=document.getElementById("inp-name"),eE=document.getElementById("inp-email"),pE=document.getElementById("inp-phone"),pB=document.getElementById("payBtn");
     var vL=function(){state.lead.name=nE.value.trim();state.lead.email=eE.value.trim();state.lead.phone=pE.value.trim();pB.disabled=!(state.lead.name.length>=2&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.lead.email))};
     nE.addEventListener("input",vL);eE.addEventListener("input",vL);pE.addEventListener("input",vL);vL();
-    // TEST MODE toggle - set to false to enable Stripe
-    var TEST_MODE = false;
+    var TEST_MODE=false;
     pB.addEventListener("click",async function(){
       if(pB.disabled)return;
       pB.textContent="SAVING...";pB.disabled=true;
       fbq('track','Lead',{content_name:state.resultType,currency:'USD',value:27.99});
       ttq.track('SubmitForm',{content_name:state.resultType,currency:'USD',value:27.99});
       saveToStorage();
-      // Save to Supabase as backup
       try{await fetch("/api/quiz-save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:state.lead.email,name:state.lead.name,phone:state.lead.phone,archetype:state.resultType,secondaryType:state.secondaryType,geneKey:state.geneKey,birthday:state.birthday,answers:state.answers,scores:state.typeScores})})}catch(e){console.error("Save failed:",e)}
       if(TEST_MODE){state.step=questions.length+2;render();return}
       fbq('track','InitiateCheckout',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
       ttq.track('InitiateCheckout',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
       els.toast.textContent="Redirecting to secure checkout...";els.toast.style.display="block";
-      // sessionStorage survives Stripe redirect on same device (unlike localStorage on iOS Safari)
       try{sessionStorage.setItem("flowe_quiz_type",state.resultType);sessionStorage.setItem("flowe_quiz_email",state.lead.email);}catch(e){}
-      var stripeTarget=STRIPE_URL;
-      setTimeout(function(){window.location.href=stripeTarget},600);
+      setTimeout(function(){window.location.href=STRIPE_URL},600);
     });
     return;
   }
-
-  // ── Results (step 5) ──
+  // Results (step 5)
   if(state.step===questions.length+2){
     var arch=archetypes[state.resultType],gk=state.geneKey,sec=state.secondaryType?archetypes[state.secondaryType]:null;
     els.btnrow.style.display="none";
@@ -472,7 +458,13 @@ function render(){
       '<a class="btn-pay" href="'+CALL_URL+'">Book My Career Direction Call</a>'+
       '<div class="pay-fine">Limited spots weekly.</div></div>';
     els.screen.innerHTML=h;
-    document.getElementById("copyBtn").addEventListener("click",function(){var t=buildReportText();if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){document.getElementById("copyBtn").textContent="Copied!";setTimeout(function(){document.getElementById("copyBtn").textContent="Copy My Full Report"},2000)})}});
+    document.getElementById("copyBtn").addEventListener("click",function(){
+      var t=buildReportText();
+      if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){
+        document.getElementById("copyBtn").textContent="Copied!";
+        setTimeout(function(){document.getElementById("copyBtn").textContent="Copy My Full Report"},2000);
+      })}
+    });
     generateAiReading();
     sendWebhook({event:"result_viewed",timestamp:new Date().toISOString(),name:state.lead.name,email:state.lead.email,archetype:state.resultType,geneKey:gk.gate+" - "+gk.name});
     return;
@@ -501,8 +493,6 @@ function checkStripeReturn(){
     var ssType=sessionStorage.getItem("flowe_quiz_type");
     var ssEmail=sessionStorage.getItem("flowe_quiz_email");
     if(ssType&&archetypes[ssType]){
-      // Don't trust sessionStorage for archetype - go to email recovery
-      // so Supabase is always the source of truth
       if(ssEmail)state.lead.email=ssEmail;
       sessionStorage.removeItem("flowe_quiz_type");sessionStorage.removeItem("flowe_quiz_email");
       state.step=-1;
@@ -513,7 +503,6 @@ function checkStripeReturn(){
   state.step=-1;
   return true;
 }
-
 function renderRecovery(){
   els.btnrow.style.display="none";
   els.screen.innerHTML='<div class="qtitle">Welcome back!</div><div class="qhint">Enter the email you used to purchase your reading and we\'ll pull it up.</div>'+
@@ -521,7 +510,9 @@ function renderRecovery(){
     '<button class="btn-pay" id="recoverBtn" disabled>Retrieve My Reading</button>'+
     '<div class="gk-ai-loading" id="recover-status" style="display:none"></div>';
   var emailEl=document.getElementById("recover-email"),btn=document.getElementById("recoverBtn"),statusEl=document.getElementById("recover-status");
+  if(state.lead.email)emailEl.value=state.lead.email;
   emailEl.addEventListener("input",function(){btn.disabled=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())});
+  if(state.lead.email)btn.disabled=false;
   btn.addEventListener("click",async function(){
     btn.disabled=true;btn.textContent="LOOKING UP...";
     statusEl.style.display="block";statusEl.textContent="Searching for your reading...";
@@ -533,7 +524,7 @@ function renderRecovery(){
       state.birthday=d.birthday||{month:"",day:"",year:"",time:""};
       var restoredType=d.archetype||null;
       if(!restoredType||!archetypes[restoredType]){
-        statusEl.textContent="We found your purchase but couldn\'t load your reading. Please contact hello@flowecollective.com and we\'ll sort it out right away.";
+        statusEl.textContent="We found your purchase but couldn't load your reading. Please contact hello@flowecollective.com and we'll sort it out right away.";
         btn.disabled=false;btn.textContent="Retrieve My Reading";
         return;
       }
@@ -549,4 +540,18 @@ function renderRecovery(){
   });
 }
 els.backBtn.addEventListener("click",function(){if(state.step>0){state.step--;render()}});
-els.nextBtn.addEventListener("click",function(){if(state.step===questions.length+2){Object.assign(state,{step:
+els.nextBtn.addEventListener("click",function(){
+  if(state.step===questions.length+2){
+    Object.assign(state,{step:0,answers:{},typeScores:{ARTIST:0,OWNER:0,MENTOR:0,INFLUENCER:0},lead:{name:"",email:"",phone:""},birthday:{month:"",day:"",year:"",time:""},resultType:null,secondaryType:null,geneKey:null,aiSections:null});
+    render();return;
+  }
+  if(state.step<questions.length){
+    var q=questions[state.step];
+    if(state.answers[q.key]==null)return;
+  }
+  state.step++;render();
+});
+if(!checkStripeReturn())render();
+</script>
+</body>
+</html>
