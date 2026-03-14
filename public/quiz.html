@@ -419,13 +419,40 @@ function render(){
       fbq('track','Lead',{content_name:state.resultType,currency:'USD',value:27.99});
       ttq.track('SubmitForm',{content_name:state.resultType,currency:'USD',value:27.99});
       saveToStorage();
-      try{await fetch("/api/quiz-save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:state.lead.email,name:state.lead.name,phone:state.lead.phone,archetype:state.resultType,secondaryType:state.secondaryType,geneKey:state.geneKey,birthday:state.birthday,answers:state.answers,scores:state.typeScores})})}catch(e){console.error("Save failed:",e)}
+      try{
+        var saveRes=await fetch("/api/quiz-save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:state.lead.email,name:state.lead.name,phone:state.lead.phone,archetype:state.resultType,secondaryType:state.secondaryType,geneKey:state.geneKey,birthday:state.birthday,answers:state.answers,scores:state.typeScores})});
+        var saveData=await saveRes.json();
+        if(saveData.id)state._savedSessionId=saveData.id;
+      }catch(e){console.error("Save failed:",e)}
       if(TEST_MODE){state.step=questions.length+2;render();return}
       fbq('track','InitiateCheckout',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
       ttq.track('InitiateCheckout',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
       els.toast.textContent="Redirecting to secure checkout...";els.toast.style.display="block";
-      try{sessionStorage.setItem("flowe_quiz_type",state.resultType);sessionStorage.setItem("flowe_quiz_email",state.lead.email);}catch(e){}
-      setTimeout(function(){window.location.href=STRIPE_URL},600);
+      els.toast.textContent="Preparing secure checkout...";els.toast.style.display="block";
+      try{
+        var coRes=await fetch("/api/stripe-checkout",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            email:state.lead.email,
+            name:state.lead.name,
+            archetype:state.resultType,
+            sessionId:state._savedSessionId||""
+          })
+        });
+        var coData=await coRes.json();
+        if(coData.url){
+          window.location.href=coData.url;
+        }else{
+          // Fallback to payment link if checkout session fails
+          try{sessionStorage.setItem("flowe_quiz_type",state.resultType);sessionStorage.setItem("flowe_quiz_email",state.lead.email);}catch(e){}
+          window.location.href=STRIPE_URL;
+        }
+      }catch(e){
+        // Fallback to payment link
+        try{sessionStorage.setItem("flowe_quiz_type",state.resultType);sessionStorage.setItem("flowe_quiz_email",state.lead.email);}catch(e2){}
+        window.location.href=STRIPE_URL;
+      }
     });
     return;
   }
@@ -473,7 +500,24 @@ function render(){
 function checkStripeReturn(){
   var p=new URLSearchParams(window.location.search);
   if(p.get("paid")!=="1")return false;
-  // Try localStorage first
+
+  var urlType=p.get("t")?decodeURIComponent(p.get("t")):null;
+  var urlEmail=p.get("e")?decodeURIComponent(p.get("e")):null;
+
+  // Best case: URL has archetype + email baked in (Stripe Checkout Session flow)
+  // Auto-restore from Supabase immediately - no storage needed, works in incognito
+  if(urlType&&archetypes[urlType]&&urlEmail){
+    state.lead.email=urlEmail;
+    state.resultType=urlType;
+    state._autoRestore=true;
+    state.step=-1;
+    window.history.replaceState({},"",window.location.pathname);
+    fbq('track','Purchase',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
+    ttq.track('CompletePayment',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
+    return true;
+  }
+
+  // Fallback: try localStorage (works on desktop non-incognito)
   try{
     var s=JSON.parse(localStorage.getItem("flowe_quiz")||"null");
     if(s&&s.resultType){
@@ -488,58 +532,56 @@ function checkStripeReturn(){
       return true;
     }
   }catch(e){}
-  // localStorage wiped (common on iOS Safari) - try sessionStorage next
-  try{
-    var ssType=sessionStorage.getItem("flowe_quiz_type");
-    var ssEmail=sessionStorage.getItem("flowe_quiz_email");
-    if(ssType&&archetypes[ssType]){
-      if(ssEmail)state.lead.email=ssEmail;
-      sessionStorage.removeItem("flowe_quiz_type");sessionStorage.removeItem("flowe_quiz_email");
-      state.step=-1;
-      return true;
-    }
-  }catch(e){}
-  // Nothing survived - show email recovery
+
+  // Last resort: show email recovery screen
+  if(urlEmail)state.lead.email=urlEmail;
+  state._autoRestore=!!urlEmail;
   state.step=-1;
   return true;
 }
+async function doRestore(email,statusEl,btn){
+  try{
+    var res=await fetch("/api/quiz-restore?email="+encodeURIComponent(email));
+    if(!res.ok)throw new Error("Not found");
+    var d=await res.json();
+    state.lead={name:d.name||"",email:d.email||"",phone:d.phone||""};
+    state.birthday=d.birthday||{month:"",day:"",year:"",time:""};
+    var restoredType=d.archetype||null;
+    if(!restoredType||!archetypes[restoredType]){
+      if(statusEl)statusEl.textContent="We found your purchase but couldn\'t load your reading. Please contact hello@flowecollective.com";
+      if(btn){btn.disabled=false;btn.textContent="Retrieve My Reading";}
+      return;
+    }
+    state.resultType=restoredType;state.secondaryType=d.secondaryType||null;
+    state.geneKey=d.geneKey;state.answers=d.answers||{};state.typeScores=d.scores||{};
+    state.step=questions.length+2;
+    window.history.replaceState({},"",window.location.pathname);
+    render();
+  }catch(e){
+    if(statusEl)statusEl.textContent="No reading found for that email. Please check and try again, or contact hello@flowecollective.com";
+    if(btn){btn.disabled=false;btn.textContent="Retrieve My Reading";}
+  }
+}
 function renderRecovery(){
   els.btnrow.style.display="none";
+  if(state._autoRestore&&state.lead.email){
+    els.screen.innerHTML='<div class="qtitle">Loading your reading...</div><div class="gk-ai-loading">Retrieving your personalized reading...</div>';
+    doRestore(state.lead.email,null,null);
+    return;
+  }
   els.screen.innerHTML='<div class="qtitle">Welcome back!</div><div class="qhint">Enter the email you used to purchase your reading and we\'ll pull it up.</div>'+
     '<div class="field"><label>Email</label><input id="recover-email" placeholder="you@email.com" type="email"></div>'+
     '<button class="btn-pay" id="recoverBtn" disabled>Retrieve My Reading</button>'+
     '<div class="gk-ai-loading" id="recover-status" style="display:none"></div>';
   var emailEl=document.getElementById("recover-email"),btn=document.getElementById("recoverBtn"),statusEl=document.getElementById("recover-status");
-  if(state.lead.email)emailEl.value=state.lead.email;
+  if(state.lead.email){emailEl.value=state.lead.email;btn.disabled=false;}
   emailEl.addEventListener("input",function(){btn.disabled=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())});
-  if(state.lead.email)btn.disabled=false;
-  btn.addEventListener("click",async function(){
+  btn.addEventListener("click",function(){
     btn.disabled=true;btn.textContent="LOOKING UP...";
     statusEl.style.display="block";statusEl.textContent="Searching for your reading...";
-    try{
-      var res=await fetch("/api/quiz-restore?email="+encodeURIComponent(emailEl.value.trim()));
-      if(!res.ok)throw new Error("Not found");
-      var d=await res.json();
-      state.lead={name:d.name||"",email:d.email||"",phone:d.phone||""};
-      state.birthday=d.birthday||{month:"",day:"",year:"",time:""};
-      var restoredType=d.archetype||null;
-      if(!restoredType||!archetypes[restoredType]){
-        statusEl.textContent="We found your purchase but couldn't load your reading. Please contact hello@flowecollective.com and we'll sort it out right away.";
-        btn.disabled=false;btn.textContent="Retrieve My Reading";
-        return;
-      }
-      state.resultType=restoredType;state.secondaryType=d.secondaryType||null;
-      state.geneKey=d.geneKey;state.answers=d.answers||{};state.typeScores=d.scores||{};
-      state.step=questions.length+2;
-      window.history.replaceState({},"",window.location.pathname);
-      render();
-    }catch(e){
-      statusEl.textContent="No reading found for that email. Please check and try again, or contact hello@flowecollective.com";
-      btn.disabled=false;btn.textContent="Retrieve My Reading";
-    }
+    doRestore(emailEl.value.trim(),statusEl,btn);
   });
 }
-els.backBtn.addEventListener("click",function(){if(state.step>0){state.step--;render()}});
 els.nextBtn.addEventListener("click",function(){
   if(state.step===questions.length+2){
     Object.assign(state,{step:0,answers:{},typeScores:{ARTIST:0,OWNER:0,MENTOR:0,INFLUENCER:0},lead:{name:"",email:"",phone:""},birthday:{month:"",day:"",year:"",time:""},resultType:null,secondaryType:null,geneKey:null,aiSections:null});
@@ -551,7 +593,7 @@ els.nextBtn.addEventListener("click",function(){
   }
   state.step++;render();
 });
-if(!checkStripeReturn())render();
+if(!checkStripeReturn()){render();}else{render();}
 </script>
 </body>
 </html>
