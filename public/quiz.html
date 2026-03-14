@@ -273,6 +273,7 @@ async function generateAiReading(attempt){
       if(data.sections.move.trim())moveEl.innerHTML=data.sections.move;
       state.aiSections=data.sections;
       sendReadingEmail();
+      sendReadingToCustomer();
       enablePdfDownload();
       return;
     }
@@ -319,6 +320,25 @@ function sendReadingEmail(){
       shadow:gk.shadow,
       gift:gk.gift,
       full_reading:buildReportText()
+    })
+  }).catch(function(){});
+}
+function sendReadingToCustomer(){
+  var a=archetypes[state.resultType],gk=state.geneKey;
+  fetch("/api/send-reading",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      name:state.lead.name,
+      email:state.lead.email,
+      archetype:state.resultType,
+      tagline:a.tagline,
+      geneKey:gk,
+      strengths:a.strengths,
+      challenge:a.challenge,
+      next:a.next,
+      secondaryType:state.secondaryType||null,
+      aiSections:state.aiSections||null
     })
   }).catch(function(){});
 }
