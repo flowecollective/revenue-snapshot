@@ -137,11 +137,12 @@ footer{background:var(--charcoal);padding:3rem 2rem;text-align:center;border-top
 <div class="grid"><div class="card" id="quizCard"><div class="progress"><div class="bar" id="bar"></div></div><div class="step-label" id="stepLabel">Step 1 of 6</div><div id="screen"></div><div class="btnrow" id="btnrow"><button class="btn btn-secondary" id="backBtn" disabled>Back</button><button class="btn btn-primary" id="nextBtn" disabled>Next</button></div><div class="toast" id="toast"></div><div class="error" id="error">Something went wrong.</div></div>
 <div class="card-side"><div class="side-title">Why This Works</div><div class="side-text">Your career archetype comes from your answers. Your Gene Key comes from your birth date. Together they create a reading that's unique to you.</div><ul class="side-list"><li>Your career archetype + strengths</li><li>Birth date Gene Key calculation</li><li>Shadow pattern you're likely repeating</li><li>Gift waiting to emerge</li><li>AI-personalized career insight</li></ul><div class="side-fine">No two readings are the same.</div></div></div>
 </div>
-<footer><div class="footer-logo">FLOWE</div><div class="footer-links"><a href="tel:8329740913">832-974-0913</a><a href="mailto:hello@flowecollective.com">hello@flowecollective.com</a><a href="https://instagram.com/flowecollective_" target="_blank" rel="noopener">@flowecollective_</a></div><div class="footer-copy">&copy; 2026 Flowe Collective. All rights reserved.</div></footer>
-<script>
+<footer><div class="footer-logo">FLOWE</div><div class="footer-links"><a href="tel:8329740913">832-974-0913</a><a href="/cdn-cgi/l/email-protection#bbd3ded7d7d4fbddd7d4ccded8d4d7d7ded8cfd2cdde95d8d4d6"><span class="__cf_email__" data-cfemail="2d45484141426d4b41425a484e424141484e59445b48034e4240">[email&#160;protected]</span></a><a href="https://instagram.com/flowecollective_" target="_blank" rel="noopener">@flowecollective_</a></div><div class="footer-copy">&copy; 2026 Flowe Collective. All rights reserved.</div></footer>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var STRIPE_URL="https://buy.stripe.com/aFa00i2HKdpj0vy6vE9EI05";
 var CALL_URL="https://jordanwangco.com/call";
 var WEBHOOK_URL="";
+var FORMSPREE_READING_URL=""; // e.g. "https://formspree.io/f/xxxxxxxx"
 var TOTAL_STEPS=6; // 3 questions + birthday + lead/paywall + results
 
 // ═══ GENE KEY WHEEL (gate, startDeg, name, shadow, gift, siddhi) ═══
@@ -228,7 +229,7 @@ var questions=[
   {key:"q2",title:"When you imagine your future, you see yourself...",hint:"Think 2-3 years from now.",options:[{label:"Known for exceptional work and premium clients",type:"ARTIST"},{label:"Leading a team or owning a space",type:"OWNER"},{label:"Teaching, mentoring, or educating stylists",type:"MENTOR"},{label:"Building a personal brand beyond the salon floor",type:"INFLUENCER"}]},
   {key:"q3",title:"What challenge do you feel most right now?",hint:"Be honest - this shapes your result.",weight:2,options:[{label:"Burnout - doing everything myself",type:"ARTIST"},{label:"Called to lead but unsure how to structure it",type:"OWNER"},{label:"I guide others but don't know how to monetize it",type:"MENTOR"},{label:"I want more visibility but I struggle with consistency",type:"INFLUENCER"}]}
 ];
-var state={step:0,answers:{},typeScores:{ARTIST:0,OWNER:0,MENTOR:0,INFLUENCER:0},lead:{name:"",email:"",phone:""},birthday:{month:"",day:"",year:"",time:""},resultType:null,secondaryType:null,geneKey:null};
+var state={step:0,answers:{},typeScores:{ARTIST:0,OWNER:0,MENTOR:0,INFLUENCER:0},lead:{name:"",email:"",phone:""},birthday:{month:"",day:"",year:"",time:""},resultType:null,secondaryType:null,geneKey:null,aiSections:null};
 var els={screen:document.getElementById("screen"),bar:document.getElementById("bar"),stepLabel:document.getElementById("stepLabel"),backBtn:document.getElementById("backBtn"),nextBtn:document.getElementById("nextBtn"),btnrow:document.getElementById("btnrow"),toast:document.getElementById("toast"),error:document.getElementById("error")};
 
 function setProgress(){els.bar.style.width=Math.round((state.step/(TOTAL_STEPS-1))*100)+"%";els.stepLabel.textContent="Step "+Math.min(state.step+1,TOTAL_STEPS)+" of "+TOTAL_STEPS}
@@ -283,6 +284,8 @@ async function generateAiReading(attempt){
       if(data.sections.shadow.trim())shadowEl.innerHTML=data.sections.shadow;
       if(data.sections.gift.trim())giftEl.innerHTML=data.sections.gift;
       if(data.sections.move.trim())moveEl.innerHTML=data.sections.move;
+      state.aiSections=data.sections;
+      sendReadingEmail();
       enablePdfDownload();
       return;
     }
@@ -302,7 +305,27 @@ async function generateAiReading(attempt){
   }
 }
 
-function buildReportText(){var a=archetypes[state.resultType],gk=state.geneKey;var l=["BEAUTY CAREER ARCHETYPE REPORT","Flowe Collective","Prepared for: "+state.lead.name,"","YOUR ARCHETYPE: "+a.name.toUpperCase(),a.tagline,"","GENE KEY "+gk.gate+": "+gk.name.toUpperCase(),"Shadow: "+gk.shadow,"Gift: "+gk.gift,"Siddhi: "+gk.siddhi,"","YOUR 3 STRENGTHS"];a.strengths.forEach(function(s,i){l.push((i+1)+". "+s)});l.push("","YOUR HIDDEN CHALLENGE",a.challenge,"","WHAT TO DO NEXT",a.next);if(state.secondaryType){l.push("","SECONDARY INFLUENCE: "+archetypes[state.secondaryType].name)}l.push("","---","Book a Career Direction Call: flowecollective.com/call");return l.join("\n")}
+function buildReportText(){var a=archetypes[state.resultType],gk=state.geneKey;var l=["BEAUTY CAREER ARCHETYPE REPORT","Flowe Collective","Prepared for: "+state.lead.name,"","YOUR ARCHETYPE: "+a.name.toUpperCase(),a.tagline,"","GENE KEY "+gk.gate+": "+gk.name.toUpperCase(),"Shadow: "+gk.shadow,"Gift: "+gk.gift,"Siddhi: "+gk.siddhi,"","YOUR 3 STRENGTHS"];a.strengths.forEach(function(s,i){l.push((i+1)+". "+s)});l.push("","YOUR HIDDEN CHALLENGE",a.challenge,"","WHAT TO DO NEXT",a.next);if(state.secondaryType){l.push("","SECONDARY INFLUENCE: "+archetypes[state.secondaryType].name)}if(state.aiSections){l.push("","--- AI-GENERATED GENE KEY READING ---","","CORE THEME",state.aiSections.core.replace(/<[^>]+>/g,"").trim(),"","THE SHADOW",state.aiSections.shadow.replace(/<[^>]+>/g,"").trim(),"","THE GIFT",state.aiSections.gift.replace(/<[^>]+>/g,"").trim(),"","YOUR MOVE",state.aiSections.move.replace(/<[^>]+>/g,"").trim())}l.push("","---","Book a Career Direction Call: flowecollective.com/call");return l.join("\n")}
+
+function sendReadingEmail(){
+  if(typeof FORMSPREE_READING_URL==="undefined"||!FORMSPREE_READING_URL)return;
+  var report=buildReportText();
+  fetch(FORMSPREE_READING_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      _subject:"New Quiz Reading — "+state.lead.name+" ("+state.resultType+")",
+      name:state.lead.name,
+      email:state.lead.email,
+      phone:state.lead.phone||"",
+      archetype:state.resultType,
+      gene_key:"Gate "+state.geneKey.gate+" — "+state.geneKey.name,
+      shadow:state.geneKey.shadow,
+      gift:state.geneKey.gift,
+      full_reading:report
+    })
+  }).catch(function(){});
+}
 
 function enablePdfDownload(){
   var btn=document.getElementById("pdfBtn");
@@ -412,7 +435,10 @@ function render(){
       fbq('track','InitiateCheckout',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
       ttq.track('InitiateCheckout',{content_name:'Beauty Career Archetype',currency:'USD',value:27.99});
       els.toast.textContent="Redirecting to secure checkout...";els.toast.style.display="block";
-      setTimeout(function(){window.location.href=STRIPE_URL},600);
+      // sessionStorage survives Stripe redirect on same device (unlike localStorage on iOS Safari)
+      try{sessionStorage.setItem("flowe_quiz_type",state.resultType);sessionStorage.setItem("flowe_quiz_email",state.lead.email);}catch(e){}
+      var stripeTarget=STRIPE_URL;
+      setTimeout(function(){window.location.href=stripeTarget},600);
     });
     return;
   }
@@ -470,8 +496,21 @@ function checkStripeReturn(){
       return true;
     }
   }catch(e){}
-  // No localStorage - show email recovery
-  state.step=-1; // special "recovery" step
+  // localStorage wiped (common on iOS Safari) - try sessionStorage next
+  try{
+    var ssType=sessionStorage.getItem("flowe_quiz_type");
+    var ssEmail=sessionStorage.getItem("flowe_quiz_email");
+    if(ssType&&archetypes[ssType]){
+      // Don't trust sessionStorage for archetype - go to email recovery
+      // so Supabase is always the source of truth
+      if(ssEmail)state.lead.email=ssEmail;
+      sessionStorage.removeItem("flowe_quiz_type");sessionStorage.removeItem("flowe_quiz_email");
+      state.step=-1;
+      return true;
+    }
+  }catch(e){}
+  // Nothing survived - show email recovery
+  state.step=-1;
   return true;
 }
 
@@ -492,7 +531,13 @@ function renderRecovery(){
       var d=await res.json();
       state.lead={name:d.name||"",email:d.email||"",phone:d.phone||""};
       state.birthday=d.birthday||{month:"",day:"",year:"",time:""};
-      state.resultType=d.archetype;state.secondaryType=d.secondaryType;
+      var restoredType=d.archetype||null;
+      if(!restoredType||!archetypes[restoredType]){
+        statusEl.textContent="We found your purchase but couldn\'t load your reading. Please contact hello@flowecollective.com and we\'ll sort it out right away.";
+        btn.disabled=false;btn.textContent="Retrieve My Reading";
+        return;
+      }
+      state.resultType=restoredType;state.secondaryType=d.secondaryType||null;
       state.geneKey=d.geneKey;state.answers=d.answers||{};state.typeScores=d.scores||{};
       state.step=questions.length+2;
       window.history.replaceState({},"",window.location.pathname);
@@ -504,8 +549,4 @@ function renderRecovery(){
   });
 }
 els.backBtn.addEventListener("click",function(){if(state.step>0){state.step--;render()}});
-els.nextBtn.addEventListener("click",function(){if(state.step===questions.length+2){Object.assign(state,{step:0,answers:{},typeScores:{ARTIST:0,OWNER:0,MENTOR:0,INFLUENCER:0},resultType:null,secondaryType:null,geneKey:null,birthday:{month:"",day:"",year:"",time:""}});render();return}state.step++;render()});
-checkStripeReturn();render();
-</script>
-</body>
-</html>
+els.nextBtn.addEventListener("click",function(){if(state.step===questions.length+2){Object.assign(state,{step:
